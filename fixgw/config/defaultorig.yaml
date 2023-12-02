@@ -1,4 +1,4 @@
-﻿# This is the main configuration file for the FIX-Gateway Server
+# This is the main configuration file for the FIX-Gateway Server
 
 # For use in this configuration, {CONFIG} will be replaced with the
 # directory where this file is found.
@@ -36,26 +36,12 @@ connections:
 
   # Command Line Module
   command:
-    load: yes
+    load: no
     module: fixgw.plugins.command
     prompt: "FIX:"
     # If set quiting the command interpreter plugin
     # will end execution of the program
     quit: yes
-
-  demo:
-   load: yes
-   module: fixgw.plugins.demo
-
-  # plugin for pyG5 and pyEfis conversion data fom mavlink msgs
-  mavlink2PX4G5:
-   load: yes
-   module: fixgw.plugins.mavlink2PX4G5
-
-  skeleton:
-   load: no
-   module: fixgw.plugins.skel
-
 
   # FlightGear Flight Simulator Module
   # To start FlightGear with these paramaters, use the following command...
@@ -174,8 +160,6 @@ connections:
       # can be in absolute units or in percentage of full range.
       deadband: 1%
     items:
-      - key: ALT
-      - key: IAS
       - key: OILT1
         start_bypass: yes
         cond_bypass: TACH1 < 500
