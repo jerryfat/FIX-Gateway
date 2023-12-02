@@ -50,7 +50,7 @@ connections:
   # plugin for pyG5 and pyEfis conversion data fom mavlink msgs
   mavlink2PX4G5:
    load: yes
-   module: fixgw.plugins.mavlink2PX4G5
+   module: fixgw.plugins.plugin-mavlink2PX4G5
 
   skeleton:
    load: no
