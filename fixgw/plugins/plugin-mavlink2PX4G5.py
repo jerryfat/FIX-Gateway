@@ -103,22 +103,21 @@ class MainThread(threading.Thread):
         # python3 /home/jf/fixgw/mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100
         #
         #command = 'python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #pixhawk usb
-        #command = 'python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100'  #sik
-        command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
+        #command = 'python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100'  #sik radio
         #command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
-
+        command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
-        print("starting subprocess pyEfis..")
+        print("starting subprocess pyEfis ../pyEfis/pyEfis.py")
         command = 'python3 ../pyEfis/pyEfis.py' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
         #python3 /home/jf/pyg5/Scripts/pyG5DualStacked 
-        print("starting subprocess pyG5 pyG5Main.")
+        print("starting subprocess pyG5 ../pyG5/pyG5/pyG5Main.py -m hsi")
         command = 'python3 ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
-        print("starting subprocess sitl..")
+        print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
         command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
