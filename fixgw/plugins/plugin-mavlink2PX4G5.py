@@ -78,8 +78,20 @@ class MainThread(threading.Thread):
            This gives the thread all the plugin goodies that the
            parent has."""
         super(MainThread, self).__init__()
-        self.getout = False   # indicator for when to stop
-        self.parent = parent  # parent plugin object
+        self.getout            = False   # indicator for when to stop
+        self.parent            = parent  # parent plugin object
+        self.FIXGWserverIPaddr = parent.config['FIXGWserverIPaddr'] if ('FIXGWserverIPaddr' in parent.config) and parent.config['FIXGWserverIPaddr'] else ''
+        self.FIXGWserverIPport = int(parent.config['FIXGWserverIPport']) if ('FIXGWserverIPport' in parent.config) and parent.config['FIXGWserverIPport'] else 3490
+        self.pyG5SimAddr       = parent.config['pyG5SimAddr']  
+        self.pyG5SimPort       = int(parent.config['pyG5SimPort'])  #65432
+        self.pyefisSimAddr     = parent.config['pyefisSimAddr']  #127.0.0.1
+        self.pyefisSimPort     = int(parent.config['pyefisSimPort'])  #2100
+        self.pyMAVPX4connect   = parent.config['pyMAVPX4connect']  #127.0.0.1:14445 # /dev/ttyUSB0,57600  usb port sik radio  # /dev/ttyACM0,57600  raw usb px connection serial port
+
+        self.timeout = float(parent.config['timeout']) if ('timeout' in parent.config) and parent.config['timeout'] else 1.0
+        self.buffer_size = int(parent.config['buffer_size']) if ('buffer_size' in parent.config) and parent.config['buffer_size'] else 1024
+        print("starting subprocess mavlink to pyg5 pyefis converter..")
+        print("init() plugin-mavlink2PX4G5  __init__().. self.host self.port self.timeout self.buffer_size ",self.FIXGWserverIPaddr, self.FIXGWserverIPport, self.timeout, self.buffer_size) 
         self.log = parent.log  # simplifies logging
         self.count = 0
         self.keylist = {"ROLL":3, "PITCH":0, "IAS":113, "ALT":4220,
@@ -92,22 +104,17 @@ class MainThread(threading.Thread):
         # Initialize the points
         for each in self.keylist:
             self.parent.db_write(each, self.keylist[each])
-        # end init
-        self.FIXGWserverIPaddr = "127.0.0.1"
-        self.FIXGWserverIPport = 2100
-        #
-        print("starting subprocess mavlink to pyg5 pyefis converter..")  #connection_string =  -m "/dev/ttyUSB0" serial port pixhawk
-        # -m addr:port or mavlink/px4/ardupilotSerial  -g pyG5simAddrPort  -e pyEfisAddrPort
-        # command = 'python3 /home/jf/fixgw/mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100'  -m /dev/ttyUSB0
-        # command = 'python3 /home/jf/fixgw/mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100'or -m /dev/ttyACM0
-        # python3 /home/jf/fixgw/mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100
-        #
+        # start external apps pyG5 pyEfis mavlink2PX4G5 and sitl if no external pixhawk over sik or direct usb conn
         #command = 'python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #pixhawk usb
         #command = 'python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100'  #sik radio
         #command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
-        command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
+        #command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
+        # sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
+        command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
+        print("command:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        #
+        #  gnome-terminal --geometry=120x20+500+500     --geometry 40x80+100+100 didnt work right
+
         print("starting subprocess pyEfis ../pyEfis/pyEfis.py")
         command = 'python3 ../pyEfis/pyEfis.py' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -120,35 +127,10 @@ class MainThread(threading.Thread):
         print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
         command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        #subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        #subprocess.Popen(['xterm -geometry 200x200+100+350', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        #-geometry 93x31+100+350
+        #
         # $ sudo tcpdump -i docker0 udp port 14550 
         #
         # jf@jfhome:~/fixgw$ ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
-        # load translation conversion key pairs
-        '''import csv
-
-Creating list of field names
-
-field_names= ['No', 'Company', 'Car Model']
-
-Creating a list of python dictionaries
-
-    cars = [
-    {‘No’: 1, ‘Company’: ‘Ferrari’, ‘Car Model’: ‘488 GTB’},
-    {‘No’: 2, ‘Company’: ‘Porsche’, ‘Car Model’: ‘918 Spyder’},
-    {‘No’: 3, ‘Company’: ‘Bugatti’, ‘Car Model’: ‘La Voiture Noire’},
-    {‘No’: 4, ‘Company’: ‘Rolls Royce’, ‘Car Model’: ‘Phantom’},
-    {‘No’: 5, ‘Company’: ‘BMW’, ‘Car Model’: ‘BMW X7’},
-    ] 
-
-Writing content of dictionaries to CSV file
-
-with open('Names.csv', 'w') as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=field_names)
-    writer.writeheader()
-    writer.writerows(cars)'''
 
 
     def run(self):
@@ -157,7 +139,7 @@ with open('Names.csv', 'w') as csvfile:
         while True:
             if self.getout:
                 break
-            #time.sleep(1)
+            #time.sleep(1) # loop delay
             self.count += 1
             self.tmp="FIXGW(run) mavlink plugin run loop thread... waiting for data on ... "+self.FIXGWserverIPaddr+" self.FIXGWserverIPaddr ,  "+ str(self.FIXGWserverIPport)+"self.FIXGWserverIPport"
             self.log.debug(self.tmp) 
@@ -195,10 +177,31 @@ with open('Names.csv', 'w') as csvfile:
                     except: pass
                     # #self.parent.db_write("IAS", self.data_dict["ais"])
                 self.conn.close()
+        '''import csv
+
+        Creating list of field names
+
+        field_names= ['No', 'Company', 'Car Model']
+
+        Creating a list of python dictionaries
+
+        cars = [
+        {‘No’: 1, ‘Company’: ‘Ferrari’, ‘Car Model’: ‘488 GTB’},
+        {‘No’: 2, ‘Company’: ‘Porsche’, ‘Car Model’: ‘918 Spyder’},
+        {‘No’: 3, ‘Company’: ‘Bugatti’, ‘Car Model’: ‘La Voiture Noire’},
+        {‘No’: 4, ‘Company’: ‘Rolls Royce’, ‘Car Model’: ‘Phantom’},
+        {‘No’: 5, ‘Company’: ‘BMW’, ‘Car Model’: ‘BMW X7’},
+        ] 
+ 
+        Writing content of dictionaries to CSV file
+
+        with open('Names.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+        writer.writeheader()
+        writer.writerows(cars)'''
         
     def stop(self):
         self.getout = True
-
 
 
 class Plugin(plugin.PluginBase):
