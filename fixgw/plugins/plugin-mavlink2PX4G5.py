@@ -110,6 +110,11 @@ class MainThread(threading.Thread):
         #command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
         #command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
         # sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
+        if(self.pyMAVPX4connect == "172.17.0.1:14550"): # launch sitl if connection string matches "172.17.0.1:14550"
+            print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
+            command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
+            subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            time.sleep(1) # let sitl startup before connecting
         command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
         print("command:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -124,9 +129,7 @@ class MainThread(threading.Thread):
         command = 'python3 ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
-        print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
-        command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
-        subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        
         #
         # $ sudo tcpdump -i docker0 udp port 14550 
         #

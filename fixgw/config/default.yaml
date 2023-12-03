@@ -57,8 +57,9 @@ connections:
    pyG5SimPort:       65432
    pyefisSimAddr:     127.0.0.1
    pyefisSimPort:     2100
-   pyMAVPX4connect:   127.0.0.1:14445 # /dev/ttyUSB0,57600  usb port sik radio  # /dev/ttyACM0,57600  raw usb px connection serial port
-   buffer_size:       1024
+   pyMAVPX4connect:   127.0.0.1:14445 
+   # sitl -m 172.17.0.1:14550 #qgcs -m 127.0.0.1:14445 qgcs forwarded mav  # PX4 -m /dev/ttyACM0,57600 PX4 pixhawk direct usb  # sik /dev/ttyUSB0,57600 sik radio usb 
+   buffer_size:       1024 
    timeout:           10.0
 
 
