@@ -25,7 +25,7 @@ import json
 import re
 from math import *
 
-# usage: $ python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100
+# usage: $ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100
 
 ################################################################################################
 # Settings
@@ -55,6 +55,7 @@ data_dict = {}
 # command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
 # command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
 # sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
+
 ################################################################################################
 # Parse connection argument
 parser = argparse.ArgumentParser()
@@ -86,26 +87,23 @@ print("cli autopilot ardupilot dronekit connection string-Px4simAddrPort",Px4sim
 
 def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
     global data_dict
-    tmp = str(msg).split(" ")
-    #print("tmp[1:]=", tmp[1:])
-    text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:]))
-    #print("text ",text)
-    tmp2= str(tmp[1:]).replace("'{","'")
-    #print("tmp2=", tmp2)
-    tmp3= tmp2.replace("}'","'")
-    #print("tmp3=", tmp3)
-    tmp4= tmp3.replace(", ':'," , ":")
-    #print("tmp4=", tmp4)
-    tmp5= tmp4.replace(",'" , "'")
-    #print("tmp5=", tmp5)
-    tmp6= tmp5.replace("[" , "{") #open close for data dictionary input
-    #print("tmp6=", tmp6)
-    tmp7= tmp6.replace("]" , "}")
-    #print("tmp7=", tmp7)
-    tmp8= tmp7.replace("\'" , "\"")
-    #print("tmp8=", tmp8) # worked with pyG5 up to here
+    tmp = str(msg).split(" ") #print("tmp[1:]=", tmp[1:])
+    text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:])) #print("text ",text)
+    tmp2= str(tmp[1:]).replace("'{","'") #print("tmp2=", tmp2)
+    tmp3= tmp2.replace("}'","'") #print("tmp3=", tmp3)
+    tmp4= tmp3.replace(", ':'," , ":") #print("tmp4=", tmp4)
+    tmp5= tmp4.replace(",'" , "'") #print("tmp5=", tmp5)
+    tmp6= tmp5.replace("[" , "{") #open close for data dictionary input #print("tmp6=", tmp6)
+    tmp7= tmp6.replace("]" , "}") #print("tmp7=", tmp7)
+    tmp8= tmp7.replace("\'" , "\"") #print("tmp8=", tmp8) # worked with pyG5 up to here
+    # end of pyG5 text mangling
+    tmp9= tmp8.replace(": \"" , ": ") #  ' to " keys for pyefis #print("tmp9=", tmp9)
+    tmp10= tmp9.replace("\"," , ",") #  ", to , keys for pyefis #print("tmp10=", tmp10)
+    tmp11= tmp10.replace("\"}" , "}") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
+    #
     # send data to pyG5
     if(len(pyG5SimAddrPort) != 0):
+        # convert text string from above into a data_dict{}
         data_dict.update(json.loads(tmp8))
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
@@ -119,14 +117,9 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
                     print("pyG5SimAddrPort-",pyG5SimAddrPort)
         conn.close
     #
-    tmp9= tmp8.replace(": \"" , ": ") #  ' to " keys for pyefis
-    #print("tmp9=", tmp9)
-    tmp10= tmp9.replace("\"," , ",") #  ", to , keys for pyefis
-    #print("tmp10=", tmp10)
-    tmp11= tmp10.replace("\"}" , "}") # end quote and curly bracket -> bracket for pyefis
-    #print("tmp11=", tmp11)
-    # send data to pyEfia
+    # send data to pyEfis
     if(len(pyefisSimAddrPort) != 0):
+        # convert text string from above into a data_dict{}
         data_dict.update(json.loads(tmp11))
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
@@ -142,37 +135,13 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
     return
 
 
-
-
 ################################################################################################
 # Init
 ################################################################################################
-# https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html
-# $ python3 fullmission.py -c 127.0.0.1:14445 connects to jmavsim
-# sudo tcpdump -i lo -n udp port 14445 port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs
-# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
-# sudo tcpdump -i lo -n udp port 14550 data from sitl at 172.17.0.1
-# https://docs.qgroundcontrol.com/master/en/releases/daily_builds.html
-# https://d176tv9ibo4jno.cloudfront.net/builds/master/QGroundControl.AppImage
-# firmware ardupilot https://firmware.ardupilot.org/Plane/latest/Pixracer/
-# https://ardupilot.org/dev/docs/pre-built-binaries.html
-# https://firmware.ardupilot.org/Plane/stable/Pixracer-bdshot/arduplane.apj
-# https://firmware.ardupilot.org/Plane/stable/
-# subprocess.Popen(["sudo","docker run --rm -it jonasvautherin/px4-gazebo-headless"]) 
-# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
-# $ FIXGW ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
-# Connect to the Vehicle
-# ~/fixgw$ python3 ./mavlink2pyg5.py -c 172.17.0.1:14550
-# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
-# jf@jfhome:~/fixgw$ sudo tcpdump -i lo -n udp port 14550 # from docker gazebo
-# $ sudo tcpdump -i lo -n udp port 14445
-# $ sudo tcpdump -i docker0 port 14550
-
-
 # open connection to autopilot sitl ardupilot px4
 print ("Connecting... to autopilot/sitl")
 vehicle = None
-# open using mavutil.mavlink_connection() reopen connection for mavlink 
+# open using mavutil.mavlink_connection() open connection for mavlink msgs
 vehicle = mavutil.mavlink_connection(connection_string ,source_system=250, wait_ready=True,  ) 
 print("Connection made to vehicle, info: (connection_string %s targ.system %u targ.component %u src.sys %u src.comp %u src.vehicle %s" %  (connection_string, vehicle.target_system, vehicle.target_component, vehicle.source_system, vehicle.source_component, vehicle))
 # Display basic vehicle state
@@ -215,6 +184,27 @@ time.sleep(1)
 
 app.exec()
 ############################### END #########################
+# notes:
+# https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html
+# $ python3 fullmission.py -c 127.0.0.1:14445 connects to jmavsim
+# sudo tcpdump -i lo -n udp port 14445 port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs
+# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
+# sudo tcpdump -i lo -n udp port 14550 data from sitl at 172.17.0.1
+# https://docs.qgroundcontrol.com/master/en/releases/daily_builds.html
+# https://d176tv9ibo4jno.cloudfront.net/builds/master/QGroundControl.AppImage
+# firmware ardupilot https://firmware.ardupilot.org/Plane/latest/Pixracer/
+# https://ardupilot.org/dev/docs/pre-built-binaries.html
+# https://firmware.ardupilot.org/Plane/stable/Pixracer-bdshot/arduplane.apj
+# https://firmware.ardupilot.org/Plane/stable/
+# subprocess.Popen(["sudo","docker run --rm -it jonasvautherin/px4-gazebo-headless"]) 
+# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
+# $ FIXGW ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+# Connect to the Vehicle
+# ~/fixgw$ python3 ./mavlink2pyg5.py -c 172.17.0.1:14550
+# $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
+# jf@jfhome:~/fixgw$ sudo tcpdump -i lo -n udp port 14550 # from docker gazebo
+# $ sudo tcpdump -i lo -n udp port 14445
+# $ sudo tcpdump -i docker0 port 14550
 
 
 
