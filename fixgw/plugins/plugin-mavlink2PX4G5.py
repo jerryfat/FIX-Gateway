@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+																																																																																		#!/usr/bin/env python
 
 #  Copyright (c) 2014 Phil Birkelbach
 #
@@ -31,6 +31,7 @@ import subprocess
 import json
 import re
 from math import *
+
 # plugin
 import struct#
 import threading
@@ -43,6 +44,21 @@ import csv
 # timestamp date_time
 now = datetime.now()
 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+
+from platform import python_version
+print(python_version())
+
+try:
+    # 👇️ using Python 3.10+
+    from collections.abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    from collections     import MutableMapping
+
+# 👇️ <class 'collections.abc.MutableMapping'>
+print(MutableMapping)
+
+
 ################################################################################################
 # Settings
 ################################################################################################
@@ -116,7 +132,7 @@ class MainThread(threading.Thread):
             subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             time.sleep(5) # let sitl startup before connecting
         command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
-        print("command:",command)
+        print("command mavlink2PX4G5.py:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #  gnome-terminal --geometry=120x20+500+500     --geometry 40x80+100+100 didnt work right
 
@@ -155,7 +171,7 @@ class MainThread(threading.Thread):
         while True:
             if self.getout:
                 break
-            #time.sleep(1) # loop delay
+            time.sleep(.05) # loop delay
             self.count += 1
             self.tmp="FIXGW(run) mavlink plugin run loop thread... waiting for data on ... "+self.FIXGWserverIPaddr+" self.FIXGWserverIPaddr ,  "+ str(self.FIXGWserverIPport)+"self.FIXGWserverIPport"
             self.log.debug(self.tmp) 
