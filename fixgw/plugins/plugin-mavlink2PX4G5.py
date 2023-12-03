@@ -114,7 +114,7 @@ class MainThread(threading.Thread):
             print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
             command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
             subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-            time.sleep(1) # let sitl startup before connecting
+            time.sleep(5) # let sitl startup before connecting
         command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
         print("command:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
