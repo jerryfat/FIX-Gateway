@@ -131,7 +131,20 @@ class MainThread(threading.Thread):
         # $ sudo tcpdump -i docker0 udp port 14550 
         #
         # jf@jfhome:~/fixgw$ ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
-
+        '''
+        # default.yaml plugin for pyG5 and pyEfis conversion data fom mavlink msgs
+          mavlink2PX4G5:
+           load:              yes
+           module:            fixgw.plugins.plugin-mavlink2PX4G5
+           FIXGWserverIPaddr: 127.0.0.1
+           FIXGWserverIPport: 2100
+           pyG5SimAddr:       127.0.0.1
+           pyG5SimPort:       65432
+           pyefisSimAddr:     127.0.0.1
+           pyefisSimPort:     2100
+           pyMAVPX4connect:   127.0.0.1:14445 # /dev/ttyUSB0,57600  usb port sik radio  # /dev/ttyACM0,57600  raw usb px connection serial port
+           buffer_size:       1024
+           timeout:           10.0 '''
 
     def run(self):
         global msg
