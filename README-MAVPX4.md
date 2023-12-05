@@ -6,7 +6,7 @@
 
 =================================================================================================
 ##Installing Dronekit
-roneKit-Python can be installed on a Linux, Mac OSX, or Windows computer that has Python 2.7 and can install Python packages from the Internet.
+DroneKit-Python can be installed on a Linux, Mac OSX, or Windows computer that has Python 2.7 and can install Python packages from the Internet.
 
 It is installed from pip on all platforms:
 
@@ -27,11 +27,10 @@ Installation notes:
     sudo easy_install pip
 
 
-add to  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
-replace line "from collections     import MutableMapping"
-=================================================================================================
 
-"
+=================================================================================================
+if using Python3.10 and later you must add to  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+replace line "from collections     import MutableMapping" with:
 # Import DroneKit-Python
 from platform import python_version
 print(python_version())
@@ -43,10 +42,12 @@ except ImportError:
     # 👇️ using Python 3.10-
     from collections     import MutableMapping
 
-# 👇️ <class 'collections.abc.MutableMapping'>
+/# 👇️ <class 'collections.abc.MutableMapping'>
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
-"
+
+=================================================================================================
+
 to test:
 $ python
 Python 3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0] on linux
