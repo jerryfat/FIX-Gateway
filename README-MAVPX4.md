@@ -4,34 +4,38 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
+  
+=================================================================================================  
 
-to install everything:
+# to install everything (PyG5,pyEfis,FIXGW):  
+###  
+creat new dir  
+$ mkdir newdir  
+$ cd newdir  
+clone the modified pyEfis and FIXGW and pyG5 repos:  
+$ git clone https://github.com/jerryfat/FIX-Gateway.git  
+$ git clone https://github.com/jerryfat/pyEfis.git  
+$ git clone https://github.com/blauret/pyG5.git  
+install all the dependencies below instructions  
+to run apps  
+$cd FIX-Gateway  
+default.yaml starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
+$ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
+or seperately to test:  
+$ python3 ../pyG5/pyG5/pyG5Main.py -m hsi  
+$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100  
+$ python3 ../pyEfis/pyEfis.py  
+if use "172.17.0.1:14445" from qgcs then docker will start up gazebo sim too  
+seperately  
+python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
+python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
+python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
+python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+to starrt sitl px4 gazebo sim locally via docker app:  
+$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+$ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
+$ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
 
-$ mkdir newdir
-$ cd newdir
-clone the modified pyEfis and FIXGW and pyG5 repos:
-$ git clone https://github.com/jerryfat/FIX-Gateway.git
-$ git clone https://github.com/jerryfat/pyEfis.git
-$ git clone https://github.com/blauret/pyG5.git
-install all the dependencies below instructions
-to run apps
-$cd FIX-Gateway
-default.yaml starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0
-$ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
-or seperately to test:
-$ python3 ../pyG5/pyG5/pyG5Main.py -m hsi
-$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100
-$ python3 ../pyEfis/pyEfis.py
-if use "172.17.0.1:14445" from qgcs then docker will start up gazebo sim too
-seperately
-python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb
-python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio
-python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl
-python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded
-to starrt sitl px4 gazebo sim locally via docker app:
-$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
-$ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'
-$ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'
 =================================================================================================
 ## if using Python3.10 and later you must add to file 
 "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
