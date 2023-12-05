@@ -1,11 +1,79 @@
 
-# Mavlink to PyG5 and pyEfis using my MAV to pickle dict converter
+# Mavlink to PyG5 and pyEfis using JerryFat MAV to pickle dict converter
+from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
 
+to install everything:
+
+$ mkdir newdir
+$ cd newdir
+clone the modified pyEfis and FIXGW and pyG5 repos:
+$ git clone https://github.com/jerryfat/FIX-Gateway.git
+$ git clone https://github.com/jerryfat/pyEfis.git
+$ git clone https://github.com/blauret/pyG5.git
+install all the dependencies below instructions
+to run apps
+$cd FIX-Gateway
+default.yaml starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0
+$ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+or seperately to test:
+$ python3 ../pyG5/pyG5/pyG5Main.py -m hsi
+$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100
+$ python3 ../pyEfis/pyEfis.py
+if use "172.17.0.1:14445" from qgcs then docker will start up gazebo sim too
+seperately
+python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb
+python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio
+python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl
+python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded
+to starrt sitl px4 gazebo sim locally via docker app:
+$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
+$ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'
+$ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'
 =================================================================================================
-##Installing Dronekit
+## if using Python3.10 and later you must add to file 
+"/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+replace line "from collections     import MutableMapping" with:
+## Import DroneKit-Python
+from platform import python_version
+print(python_version())
+
+try: # for dronekit after python 3.8
+    # 👇️ using Python 3.10+
+    from collections.abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    from collections     import MutableMapping
+
+/# 👇️ <class 'collections.abc.MutableMapping'>
+print(MutableMapping)
+from dronekit import connect, Command, LocationGlobal 
+
+=================================================================================================
+
+## to test for dronekit package in python from command line:
+$ python
+Python 3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import dronekit
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+    from collections     import MutableMapping
+ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
+>>>
+results
+>>> from collections.abc import MutableMapping 
+(no error if python 3.10+)
+or
+>>> from collections     import MutableMapping 
+(no error if python 3.10-)
+
+=================================================================================================
+=================================================================================================
+## Installing Dronekit
 DroneKit-Python can be installed on a Linux, Mac OSX, or Windows computer that has Python 2.7 and can install Python packages from the Internet.
 
 It is installed from pip on all platforms:
@@ -25,43 +93,6 @@ Installation notes:
     Alternatively, the easy_install tool provides another way to install pip:
 
     sudo easy_install pip
-
-
-
-=================================================================================================
-if using Python3.10 and later you must add to  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
-replace line "from collections     import MutableMapping" with:
-# Import DroneKit-Python
-from platform import python_version
-print(python_version())
-
-try: # for dronekit after python 3.8
-    # 👇️ using Python 3.10+
-    from collections.abc import MutableMapping
-except ImportError:
-    # 👇️ using Python 3.10-
-    from collections     import MutableMapping
-
-/# 👇️ <class 'collections.abc.MutableMapping'>
-print(MutableMapping)
-from dronekit import connect, Command, LocationGlobal 
-
-=================================================================================================
-
-to test:
-$ python
-Python 3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import dronekit
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
-    from collections     import MutableMapping
-ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
->>>
->>> from collections.abc import MutableMapping (no error if python 3.10+)
->>> from collections     import MutableMapping (no error if python 3.10-)
-
 
 =================================================================================================
 ## Installation of pyG5
@@ -86,7 +117,8 @@ Running on Raspberry Pi it is recommended to install FreeSans fonts in order to 
 =================================================================================================
 ## Installation of pyEfis
 
-https://github.com/makerplane/Documentation/blob/master/pyEFIS%20Documentation%20v0-4.pdf
+see https://github.com/makerplane/Documentation/blob/master/pyEFIS%20Documentation%20v0-4.pdf
+
 pyEfis works within the MakerPlane Avionics System of Systems and requires the FiX Gateway
 to pass data to and from the display application. It also has dependencies in order for the
 application to work correctly. MakerPlane currently does not have a single installer however the

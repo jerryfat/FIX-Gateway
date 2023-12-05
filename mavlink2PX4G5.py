@@ -201,7 +201,6 @@ app.exec()
 ############################### END #########################
 # notes:
 # https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html
-# $ python3 fullmission.py -c 127.0.0.1:14445 connects to jmavsim
 # sudo tcpdump -i lo -n udp port 14445 port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs
 # $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
 # sudo tcpdump -i lo -n udp port 14550 data from sitl at 172.17.0.1
