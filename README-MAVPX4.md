@@ -1,8 +1,8 @@
 
 # Mavlink to PyG5 and pyEfis using my MAV to pickle dict converter
 
-![](/home/jf/testgit/FIX-Gateway/Screenshot from 2023-11-30 17-57-49.png)
-
+![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
+"pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
 
 =================================================================================================
 ##Installing Dronekit
