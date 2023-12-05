@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# if python3.10 then changes need in /
+# home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py
 # Import DroneKit-Python
 from platform import python_version
 print(python_version())
@@ -8,7 +10,8 @@ try: # for dronekit after python 3.8
     from collections.abc import MutableMapping
 except ImportError:
     # 👇️ using Python 3.10-
-    from collections     import MutableMapping
+    from collections     import MutableMapping 
+    # original line for python3.9 or lower
 
 # 👇️ <class 'collections.abc.MutableMapping'>
 print(MutableMapping)
@@ -55,7 +58,7 @@ data_dict = {}
 # command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
 # command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
 # sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
-# in /home/jf/.local/lib/python3.10/site-packages/dronekit/__init__
+
 import collections  
 # J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
 try:
