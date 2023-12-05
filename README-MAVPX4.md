@@ -64,7 +64,7 @@ ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/py
 
 
 =================================================================================================
-##Installation of pyG5
+## Installation of pyG5
 https://github.com/blauret/pyG5/blob/main/README.md
 pyG5 depends on pySide6. Due to failure to install pySide6 from pip on Raspberry Pi OS it is not a dependency of the pyG5. As a result it needs to be installed manually.
 
@@ -84,7 +84,7 @@ Running on Raspberry Pi it is recommended to install FreeSans fonts in order to 
 
 
 =================================================================================================
-##Installation of pyEfis
+## Installation of pyEfis
 
 https://github.com/makerplane/Documentation/blob/master/pyEFIS%20Documentation%20v0-4.pdf
 pyEfis works within the MakerPlane Avionics System of Systems and requires the FiX Gateway
@@ -155,7 +155,7 @@ end pyEfis
 ================================================================================================
 
 =======================
-##Docker installation
+## Docker installation
 for SITL using gazebo and docker, docker install is kinda lengthy
 ==========================================================================
 https://github.com/jonasvautherin/px4-gazebo-headless#readme
@@ -177,7 +177,7 @@ In this configuration, the container will send MAVLink to the host on ports 1455
 
 https://github.com/jonasvautherin/px4-gazebo-headless#readme
 =================================================================================================
-installing docker ubuntu mint 22.04
+## installing docker ubuntu mint 22.04
 https://linuxiac.com/how-to-install-docker-on-linux-mint-21/
 Step 1: Install Prerequisites
 
@@ -259,7 +259,7 @@ Docker permission denied.
 Docker permission denied.
 
 ==============================================
-So, to run Docker commands as a non-root user, you must add your user to the docker group. To do that, type in the following:
+# run Docker commands as a non-root user, you must add your user to the docker group. To do that, type in the following:
 
 $ sudo usermod -aG docker ${USER}
 
