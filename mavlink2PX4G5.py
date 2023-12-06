@@ -5,30 +5,6 @@
 from platform import python_version
 print("using Python ver:",python_version())
 
-'''import collections  
-# J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
-try:
-    # 👇️ using Python 3.10+
-    from collections.abc import MutableMapping
-except ImportError:
-    # 👇️ using Python 3.10-
-    from collections     import MutableMapping
-try:
-    collectionsAbc = collections.abc
-except AttributeError:
-    collectionsAbc = collection'''
-
-'''try: # for dronekit after python 3.8
-    # 👇️ using Python 3.10+
-    from collections.abc import MutableMapping
-except ImportError:
-    # 👇️ using Python 3.10-
-    from collections     import MutableMapping 
-    # original line for python3.9 or lower
-
-# 👇️ <class 'collections.abc.MutableMapping'>'''
-#print(MutableMapping)
-
 from dronekit import connect, Command, LocationGlobal 
 # from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
 from pymavlink import mavutil
