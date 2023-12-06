@@ -6,7 +6,7 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
 =================================================================================================  
-First release of mavlink2PX4G5.py which sends (real or sitl) PX4 or Ardupilot MAV data over IP to forked PyG5 and forked PyEfis (via FIXGW server), I added a new plugin and config files for FIXGW and README-MAVPX4G5.md. I moddified pyG5 by addinga new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also download forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. The only chnage to pyEfis is to use a window and 'fullscreen':true in pyEfis/pyefis/main.yaml config file see README-MAVPX4G5.md.
+##First release of mavlink2PX4G5.py which sends (real or sitl) PX4 or Ardupilot MAV data over IP to forked PyG5 and forked PyEfis (via FIXGW server), I added a new plugin and config files for FIXGW and README-MAVPX4G5.md. I moddified pyG5 by addinga new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also download forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. The only chnage to pyEfis is to use a window and 'fullscreen':true in pyEfis/pyefis/main.yaml config file see README-MAVPX4G5.md.
 =================================================================================================
 JerryGCS.144.py notes
 $ pip install pandas for JerryGCS144
@@ -14,7 +14,7 @@ $ pip install cherrypy
 mavlink53.py
 sudo apt-get install python3-tk
 
-# to install everything (PyG5,pyEfis,FIXGW):  
+## to install everything (PyG5,pyEfis,FIXGW):  
 ###  
 creat new dir  
 $ mkdir newdir  
