@@ -6,6 +6,12 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
 =================================================================================================  
+=================================================================================================
+JerryGCS.144.py notes
+$ pip install pandas for JerryGCS144
+$ pip install cherrypy
+mavlink53.py
+sudo apt-get install python3-tk
 
 # to install everything (PyG5,pyEfis,FIXGW):  
 ###  
@@ -21,16 +27,39 @@ to run apps
 $cd FIX-Gateway  
 default.yaml starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
-or seperately to test:  
+ # from FIXGW default.yaml config file, plugin-mavlink2PX4G5 plugin config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
+         mavlink2PX4G5:
+           load:              yes
+           module:            fixgw.plugins.plugin-mavlink2PX4G5
+           FIXGWserverIPaddr: 127.0.0.1
+           FIXGWserverIPport: 2100
+           pyG5SimAddr:       127.0.0.1
+           pyG5SimPort:       65432
+           pyefisSimAddr:     127.0.0.1
+           pyefisSimPort:     2100
+           pyMAVPX4connect:   127.0.0.1:14445 # /dev/ttyUSB0,57600  usb port sik radio  # /dev/ttyACM0,57600  raw usb px connection serial port
+           buffer_size:       1024
+           timeout:           10.0 
+
+seperately to test apps:  
 $ python3 ../pyG5/pyG5/pyG5Main.py -m hsi  
-$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100  
 $ python3 ../pyEfis/pyEfis.py  
-if use "172.17.0.1:14445" from qgcs then docker will start up gazebo sim too  
+$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100  
+$ python3 ./mavlink2PX4G5.py -help
+jf@jfhome:~/testgit/FIX-Gateway$   python3 ./mavlink2PX4G5.py -help
+usage: mavlink2PX4G5.py [-h] [-m PX4] [-g PYG5] [-e PYEFIS]
+options:
+  -h, --help            show this help message and exit
+  -m PX4, --px4 PX4     mavlink px4 dronekit connection string or address:port 172.17.0.1:14550
+  -g PYG5, --pyg5 PYG5  pyg5sim address:port 127.0.0.1:65432
+  -e PYEFIS, --pyefis PYEFIS pyefis address:port 127.0.0.1:2100
+
+if using "172.17.0.1:14550" from qgcs then docker will start up gazebo sim too  
 seperately  
-python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
-python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
-python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
-python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+python3 ./mavlink2PX4G5.py  -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
+python3 ./mavlink2PX4G5.py  -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
+python3 ./mavlink2PX4G5.py  -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
+python3 ./mavlink2PX4G5.py  -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
 to starrt sitl px4 gazebo sim locally via docker app:  
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
@@ -39,6 +68,7 @@ $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.
 =================================================================================================
 ## if using Python3.10 and later you must add to file 
 "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+
 replace line "from collections     import MutableMapping" with:
 ## Import DroneKit-Python
 from platform import python_version
@@ -54,6 +84,37 @@ except ImportError:
 /# 👇️ <class 'collections.abc.MutableMapping'>
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
+==============
+another error possible
+
+/usr/lib/python3.10/collections/__init__.py
+from collections     import MutableMapping
+ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
+error
+<class 'collections.abc.MutableMapping'>
+Traceback (most recent call last):
+  File "/home/jf/MAVGCSenv144/JerryGCS144.py", line 53, in <module>
+    from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
+  File "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 48, in <module>
+    from collections     import MutableMapping
+ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
+
+fix line in /usr/lib/python3.10/collections/__init__.py
+'#'import _collections_abc
+and replace with:
+try: # for dronekit after python 3.8
+    # 👇️ using Python 3.10+
+    import _collections_abc
+    from _collections_abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    import _collections
+    from _collections     import MutableMapping
+
+# 👇️ <class '_collections_abc.MutableMapping'>
+print(MutableMapping)
+
+
 
 =================================================================================================
 

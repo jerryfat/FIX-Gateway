@@ -1,11 +1,24 @@
 #!/usr/bin/env python
-# if python3.10 then changes need in /
+# if python3.10 then changes need in 
 # home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py
 # Import DroneKit-Python
 from platform import python_version
-print(python_version())
+print("using Python ver:",python_version())
 
-try: # for dronekit after python 3.8
+'''import collections  
+# J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
+try:
+    # 👇️ using Python 3.10+
+    from collections.abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    from collections     import MutableMapping
+try:
+    collectionsAbc = collections.abc
+except AttributeError:
+    collectionsAbc = collection'''
+
+'''try: # for dronekit after python 3.8
     # 👇️ using Python 3.10+
     from collections.abc import MutableMapping
 except ImportError:
@@ -13,8 +26,9 @@ except ImportError:
     from collections     import MutableMapping 
     # original line for python3.9 or lower
 
-# 👇️ <class 'collections.abc.MutableMapping'>
-print(MutableMapping)
+# 👇️ <class 'collections.abc.MutableMapping'>'''
+#print(MutableMapping)
+
 from dronekit import connect, Command, LocationGlobal 
 # from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
 from pymavlink import mavutil
@@ -50,34 +64,14 @@ data_dict = {}
 # https://github.com/PX4/Firmware/blob/master/Tools/mavlink_px4.py
 # https://firmware.ardupilot.org/Plane/latest/Pixhawk1-1M/  ARDUPLANE #4.5.0-FIRMWARE_VERSION_TYPE_DEV
 # https://github.com/ArduPilot/pymavlink/blob/master/mavextra.py
-# vehSERPort = "/dev/ttyACM0"   #    vehSERBaud = "115200"
-# vehIPaddr = "localhost:14445" #"/dev/ttyACM0,57600" # "127.0.0.1:14445" #"127.0.0.1" #"172.17.0.1" # dronekit connect port "172.17.0.1:14550" if qgcs "127.0.0.1:14445 # docker # # # addr "172.17.0.2:18570" jmavsim docker
-# use "172.17.0.1:14445" if docker ## use "localhost:14450" qgcs running with forwarding 
-# command = 'python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #pixhawk usb
-# command = 'python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100'  #sik radio
-# command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
-# command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
-# sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
 
-import collections  
-# J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
-try:
-    # 👇️ using Python 3.10+
-    from collections.abc import MutableMapping
-except ImportError:
-    # 👇️ using Python 3.10-
-    from collections     import MutableMapping
-try:
-    collectionsAbc = collections.abc
-except AttributeError:
-    collectionsAbc = collection
 ################################################################################################
 # Parse connection argument
 parser = argparse.ArgumentParser()
 #parser.add_argument("-c", "--connect", help="connection string")
-parser.add_argument("-m", "--px4", help="mavlink px4 dronekit connection string or address:port 172.17.0.1:14550")
-parser.add_argument("-g", "--pyg5", help="pyg5sim address:port 127.0.0.1:65432")
-parser.add_argument("-e", "--pyefis", help="pyefis address:port 127.0.0.1:2100")
+parser.add_argument("-m", "--px4", help="recv MAV from mavlink px4 ardupilot dronekit connection string /dev/ttyUSB0,57600, /dev/ttyACM0,57600 or sitl 172.17.0.1:14550, qgcs 127.0.0.1:14445")
+parser.add_argument("-g", "--pyg5", help="pyg5sim sendto address:port 127.0.0.1:65432 same as xplane for now")
+parser.add_argument("-e", "--pyefis", help="pyefis sendto address:port 127.0.0.1:2100")
 args = parser.parse_args() # command line parameters
 # PX4 input mavlink messages
 if args.px4: # input from sitl qgcs or usb serial port to autopilot
@@ -98,6 +92,12 @@ if args.pyefis:
     print("pyefisSimAddr-",pyefisSimAddr,"  pyefisSimPort-",pyefisSimPort)
 
 print("cli autopilot ardupilot dronekit connection string-Px4simAddrPort",Px4simAddrPort,"  pyG5SimAddrPort-",pyG5SimAddrPort,"  pyefisSimAddrPort-",pyefisSimAddrPort)
+#python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
+#python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
+#python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
+#python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+#to starrt sitl px4 gazebo sim locally via docker app:  
+#$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 ################################################################################################
 
 def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
