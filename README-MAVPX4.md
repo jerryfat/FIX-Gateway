@@ -6,7 +6,7 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
 =================================================================================================  
-# Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
+## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 These repos will run an added demo using (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
 The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
 After connecting to sitl or real autopilot using mavlink over ip or serial usb ports
@@ -26,7 +26,7 @@ $ git clone https://github.com/jerryfat/FIX-Gateway.git
 $ git clone https://github.com/jerryfat/pyEfis.git  
 $ git clone https://github.com/blauret/pyG5.git  
 install all the dependencies below instructions  
-# to run apps individually
+## to run apps individually
 $cd FIX-Gateway  
 note that default.yaml config also starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
@@ -50,39 +50,39 @@ $ python3 ../pyEfis/pyEfis.py
 $ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 $ sitl #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
  USEAGE
-#  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
+##  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
 $ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works
 $ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 $ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "udp://172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 ?
 #
-# dronekit connect strings 
+## dronekit connect strings 
 python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 python mavlinkMAVSDKdronekitCombined.py  -m 172.17.0.1:14540 -g 127.0.0.1:65432 -e 127.0.0.1:2100
 python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
 python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 python3 ./mavlinkMAVSDKdronekitCombined.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
 python3 ./mavlinkMAVSDKdronekitCombined.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
-# to start px4 headless sitl px4 gazebo sim locally via docker app:  
+## to start px4 headless sitl px4 gazebo sim locally via docker app:  
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2 
-# if connect string contains :// or "172.17.0.1:14550" then sitl is started
+## if connect string contains :// or "172.17.0.1:14550" then sitl is started
  if(self.pyMAVPX4connect == "172.17.0.1:14550") or (self.pyMAVPX4connect == "udp://:14540")
 if using "172.17.0.1:14550" forwarded from qgcs then docker will start up gazebo sim too  
 seperately  
-# note that mavlink2PX4G5.py does not contain MAVSDK only dronekit mavutil
+## note that mavlink2PX4G5.py does not contain MAVSDK only dronekit mavutil
 python3 ./mavlink2PX4G5.py  -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
 python3 ./mavlink2PX4G5.py  -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 python3 ./mavlink2PX4G5.py  -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
 python3 ./mavlink2PX4G5.py  -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
-# to starrt sitl px4 gazebo sim locally via docker app:  
+## to starrt sitl px4 gazebo sim locally via docker app:  
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
 
 =================================================================================================
-# repaired this file for dronekit mymavlink
-# /usr/lib/python3.10/collections/__init__.py
+## repaired this file for dronekit mymavlink
+## /usr/lib/python3.10/collections/__init__.py
 '''import _collections_abc
 
 try: # for dronekit after python 3.8
@@ -94,7 +94,7 @@ except ImportError:
     import _collections
     from _collections     import MutableMapping
 
-# 👇️ <class '_collections_abc.MutableMapping'>
+## 👇️ <class '_collections_abc.MutableMapping'>
 print(MutableMapping)'''
 =================================================================================================
 
@@ -143,7 +143,7 @@ except ImportError:
     import _collections
     from _collections     import MutableMapping
 
-# 👇️ <class '_collections_abc.MutableMapping'>
+ 👇️ <class '_collections_abc.MutableMapping'>
 print(MutableMapping)
 
 
@@ -390,7 +390,7 @@ Docker permission denied.
 Docker permission denied.
 
 ==============================================
-# run Docker commands as a non-root user, you must add your user to the docker group. To do that, type in the following:
+## run Docker commands as a non-root user, you must add your user to the docker group. To do that, type in the following:
 
 $ sudo usermod -aG docker ${USER}
 
