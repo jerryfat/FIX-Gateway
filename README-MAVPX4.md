@@ -7,6 +7,7 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
   
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
+
 These repos will run an added demo using (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
 The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
 After connecting to sitl or real autopilot using mavlink over ip or serial usb ports
