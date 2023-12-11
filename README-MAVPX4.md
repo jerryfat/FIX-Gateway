@@ -7,6 +7,8 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
   
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
+=================================================================================================
+
 
 These repos will run an added demo using (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
 The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
@@ -15,7 +17,6 @@ the code recieves mavlink messages from autopilot and reformats and resends (rea
 to FIXGW repo I have added a new plugin and config files for FIXGW and a README-MAVPX4G5.md. 
 I moddified pyG5 by adding a new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also added to forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. 
 The only change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file
-=================================================================================================
 
 ## to install everything (PyG5,pyEfis,FIXGW):  
 ###  
