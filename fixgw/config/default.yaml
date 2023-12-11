@@ -1,5 +1,5 @@
 ﻿# This is the main configuration file for the FIX-Gateway Server
-
+#$ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 # For use in this configuration, {CONFIG} will be replaced with the
 # directory where this file is found.
 
@@ -57,7 +57,7 @@ connections:
    pyG5SimPort:       65432
    pyefisSimAddr:     127.0.0.1
    pyefisSimPort:     2100
-   pyMAVPX4connect:   /dev/ttyUSB0,57600 # connect to px4 ardupilot over usb sik radio,  127.0.0.1:14445 qgcs # gazebo sitl 172.17.0.1:14550 
+   pyMAVPX4connect:   udp://:14540  # MAVSDK libs #serial:///dev/ttyUSB0:57600  udp://:14540 # MAVSDK "udp://172.17.0.1:14540" "serial:///dev/ttyUSB0:57600" # DRONEKIT /dev/ttyUSB0,57600 # connect to px4 ardupilot over usb sik radio,  127.0.0.1:14445 qgcs # gazebo sitl 172.17.0.1:14550 
    # sitl -m 172.17.0.1:14550 #qgcs -m 127.0.0.1:14445 qgcs forwarded mav  # PX4 -m /dev/ttyACM0,57600 PX4 pixhawk direct usb  # sik -m /dev/ttyUSB0,57600 sik radio usb 
    buffer_size:       1024 
    timeout:           10.0

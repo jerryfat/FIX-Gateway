@@ -62,8 +62,25 @@ $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
 
 =================================================================================================
+# repaired this file for dronekit mymavlink
+# /usr/lib/python3.10/collections/__init__.py
+'''import _collections_abc
+
+try: # for dronekit after python 3.8
+    # 👇️ using Python 3.10+
+    import _collections_abc
+    from _collections_abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    import _collections
+    from _collections     import MutableMapping
+
+# 👇️ <class '_collections_abc.MutableMapping'>
+print(MutableMapping)'''
+=================================================================================================
+
 ## if using Python3.10 and later you must add to file 
-"/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+## "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
 
 replace line "from collections     import MutableMapping" with:
 ## Import DroneKit-Python

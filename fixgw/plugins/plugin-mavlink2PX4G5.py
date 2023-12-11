@@ -126,13 +126,20 @@ class MainThread(threading.Thread):
         #command = 'python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100' sitl
         #command = 'python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100' #qgcs forwarded
         # sitl -m 172.17.0.1:14550    # -m 127.0.0.1:14445 qgcs forwarded mav    # PX4 pixhawk direct usb -m /dev/ttyACM0,57600    # sik radio usb /dev/ttyUSB0,57600
-        if(self.pyMAVPX4connect == "172.17.0.1:14550"): # launch sitl if connection string matches "172.17.0.1:14550"
-            print("starting subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
+        # USEAGE
+        # $ python telemetry.py -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+        # $ python3 FIX-Gateway/mavlink2PX4G5.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+        # $ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+        if(self.pyMAVPX4connect == "172.17.0.1:14550") or (self.pyMAVPX4connect == "udp://:14540"): # launch sitl if connection string matches "172.17.0.1:14550"
+            print("starting PX4 SIM subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
             command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
             subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             time.sleep(5) # let sitl startup before connecting
-        command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
-        print("command mavlink2PX4G5.py:",command)
+        #
+        #command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
+        command = 'python3 ./mavlinkMAVSDKdronekitCombined.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
+        # /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py
+        print("command /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #  gnome-terminal --geometry=120x20+500+500     --geometry 40x80+100+100 didnt work right
 
@@ -177,7 +184,7 @@ class MainThread(threading.Thread):
             self.log.debug(self.tmp) 
             # Do something useful here  
             self.running = False
-            print("self.FIXGWserverIPaddr-", self.FIXGWserverIPaddr ,  "  self.FIXGWserverIPport-",self.FIXGWserverIPport)
+            #print("self.FIXGWserverIPaddr-", self.FIXGWserverIPaddr ,  "  self.FIXGWserverIPport-",self.FIXGWserverIPport)
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as self.conn: # open conn
                 #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.conn.bind((self.FIXGWserverIPaddr, self.FIXGWserverIPport))
@@ -188,33 +195,75 @@ class MainThread(threading.Thread):
                     self.data_pickled = self.conn.recv(1024)
                     self.data_dict = pickle.loads(self.data_pickled)   
                     #print("FIXGW(run) received mavlink_data_dict:  ",self.data_dict)
-                    print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled), self.data_dict, end="")
+                    print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled), self.data_dict)
                     # copy key, value pairs into data dict for efis                   
                     #try: self.parent.db_write("ALT", self.data_dict["alt"]/1000)
                     #except: pass
-                    # pack values form pickle data into dict for pyefis
-                    try: self.parent.db_write("ALT", self.data_dict["relative_alt"])
+                    
+                    # internal KEY = Data pack values form pickle data into internal dict for pyefis 
+                    # for dronekit pymavlink data converter
+                    try: # and fail no keys written
+                        self.parent.db_write("ALT",    self.data_dict["alt"])
+                        #print("\nALT dronekit")
                     except: pass
-                    try: self.parent.db_write("PITCH", self.data_dict["pitch"]*100) 
+                    try: 
+                        self.parent.db_write("PITCH", self.data_dict["pitch"]*100) 
+                        #print("\nPITCH dronekit")
                     except: pass
-                    try: self.parent.db_write("ROLL", self.data_dict["roll"]*100)
+                    try: 
+                        self.parent.db_write("ROLL",  self.data_dict["roll"]*100)
+                        #print("\nROLL dronekit")
                     except: pass
-                    try: self.parent.db_write("YAW", self.data_dict["yaw"]) 
+                    try: 
+                        self.parent.db_write("YAW",   self.data_dict["yaw"]) 
+                        #print("\nYAW dronekit")
                     except: pass
-                    try: self.parent.db_write("LAT", self.data_dict["lat"]) 
+                    try: 
+                        self.parent.db_write("LAT",   self.data_dict["lat"]) 
+                        #print("\nLAT dronekit")
                     except: pass
-                    try: self.parent.db_write("LONG", self.data_dict["lon"]) 
+                    try: 
+                        self.parent.db_write("LONG",  self.data_dict["lon"]) 
+                        #print("\nLONG dronekit")
                     except: pass
-                    try: self.parent.db_write("HEAD", self.data_dict["hdg"]/100) 
+                    try: 
+                        self.parent.db_write("HEAD",   self.data_dict["hdg"]/100) 
+                        #print("\nHEAD dronekit")
                     except: pass
-                    # #self.parent.db_write("IAS", self.data_dict["ais"])
+                    #
+                    # for MAVSDK recv msgs
+                    try: 
+                        self.parent.db_write("ALT",    self.data_dict["absolute_altitude_m"]*100)
+                        #print("\nALT mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("PITCH", self.data_dict["pitch_deg"]) 
+                        #print("\nPITCH mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("ROLL",  self.data_dict["roll_deg"])
+                        #print("\nROLL mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("YAW",   self.data_dict["yaw_deg"]) 
+                        #print("\nYAW mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("LAT",   self.data_dict["latitude_deg"]) 
+                        #print("\nLAT mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("LONG",  self.data_dict["longitude_deg"]) 
+                        #print("\nLONG mavsdk")                        
+                    except: pass
+                    try: 
+                        self.parent.db_write("HEAD",   self.data_dict["heading_deg"]) 
+                        #print("\nHEAD mavsdk")
+                    except: pass
                 self.conn.close()
-        '''import csv
-
+        '''import csv example
         Creating list of field names
-
         field_names= ['No', 'Company', 'Car Model']
-
         Creating a list of python dictionaries
 
         cars = [

@@ -17,8 +17,32 @@ import subprocess
 import json
 import re
 from math import *
-
+################################################################################################
 # usage: $ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100
+################################################################################################
+# USEAGE
+# $ python telemetry.py -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+# $ python3 FIX-Gateway/mavlink2PX4G5.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+# $ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+################################################################################################
+# repaired this file for dronekit mymavlink
+# /usr/lib/python3.10/collections/__init__.py
+'''import _collections_abc
+
+try: # for dronekit after python 3.8
+    # 👇️ using Python 3.10+
+    import _collections_abc
+    from _collections_abc import MutableMapping
+except ImportError:
+    # 👇️ using Python 3.10-
+    import _collections
+    from _collections     import MutableMapping
+
+# 👇️ <class '_collections_abc.MutableMapping'>
+print(MutableMapping)'''
+################################################################################################
+
+
 
 ################################################################################################
 # Settings
@@ -101,7 +125,7 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
                     serialized_data = pickle.dumps(data_dict)   
                     conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                     #msg.get_payload() ) #create byte wise stream from string text   
-                    print("\n--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data)," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
+                    print("\n--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data)," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort, tmp8)
                     #print("-%%%%- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
                 except:
                     print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSim()  ERROR Sending pickle serialized data... ") 
@@ -117,7 +141,7 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
                     serialized_data = pickle.dumps(data_dict)   
                     conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                     #msg.get_payload() ) #create byte wise stream from string text   
-                    print("\n--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data), pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
+                    print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data), pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort", tmp11)
                     #print("-$$$$- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
                 except:
                     print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
@@ -134,7 +158,7 @@ print ("Connecting... to autopilot/sitl")
 vehicle = None
 # open using mavutil.mavlink_connection() open connection for mavlink msgs
 vehicle = mavutil.mavlink_connection(connection_string ,source_system=250, wait_ready=True,  ) 
-print("Connection made to vehicle, info: (connection_string %s targ.system %u targ.component %u src.sys %u src.comp %u src.vehicle %s" %  (connection_string, vehicle.target_system, vehicle.target_component, vehicle.source_system, vehicle.source_component, vehicle))
+if(vehicle): print("Connection made to vehicle, info: (connection_string %s targ.system %u targ.component %u src.sys %u src.comp %u src.vehicle %s" %  (connection_string, vehicle.target_system, vehicle.target_component, vehicle.source_system, vehicle.source_component, vehicle))
 # Display basic vehicle state
 if(vehicle):
     print("Connected to vehicle, info: (connection_string %s targ.system %u targ.component %u src.sys %u src.comp %u src.vehicle %s" %  (connection_string, vehicle.target_system, vehicle.target_component, vehicle.source_system, vehicle.source_component, vehicle))
@@ -148,7 +172,10 @@ while(vehicle):
     # get mavlink message forever convert into data dict and pickle and send to pyG5 and pyEfis
     # if mavlink type 30 or 33 27 225 226 mavlink attitude or int_gps message send data to pyG5
     # send over tcp udp as 'pickle'd' data dictionary
-    msg = vehicle.recv_msg() 
+    msg = vehicle.recv_match(blocking=True) 
+    #msg = vehicle.recv_msg() 
+    msgID = msg.get_msgId() 
+    #print("--@@@@--Received mav_msgId:",msgID ," convert, sending to G5 and or Efis(): ", date_time," ", msg," ", end="")
     time.sleep(.005)
     if (msg != None):
         #if (msg != None): print("msg: ", msg)
@@ -157,7 +184,7 @@ while(vehicle):
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
             #print("-Received mav_msg, convert, send to G5 & Efis() ", date_time) #, msg)
-            print("--@@@@--Received mav_msgId:",msgID," convert, sending to G5 and or Efis(): ", date_time," ", msg," ", end="")
+            print("\n--@@@@@@@@@@@@@--Received mav_msgId:",msgID," convert, sending to G5 and or Efis(): ", date_time," ", msg," ", end="")
             SendAttitudeDataToG5simEfisSim(msg)
             # MAVLINK_MSG_ID_ATTITUDE 30
             # MAVLINK_MSG_ID_GLOBAL_POSITION_INT 33
