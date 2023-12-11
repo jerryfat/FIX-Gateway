@@ -19,9 +19,9 @@ $ git clone https://github.com/jerryfat/FIX-Gateway.git
 $ git clone https://github.com/jerryfat/pyEfis.git  
 $ git clone https://github.com/blauret/pyG5.git  
 install all the dependencies below instructions  
-to run apps  
+# to run apps individually
 $cd FIX-Gateway  
-default.yaml starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
+note that default.yaml config also starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
  # from FIXGW default.yaml config file, plugin-mavlink2PX4G5 plugin config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
          mavlink2PX4G5:
@@ -40,23 +40,35 @@ $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 seperately to test apps:  
 $ python3 ../pyG5/pyG5/pyG5Main.py -m hsi  
 $ python3 ../pyEfis/pyEfis.py  
-$ python3 ./mavlink2PX4G5.py -m 172.17.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100  
-$ python3 ./mavlink2PX4G5.py -help
-jf@jfhome:~/testgit/FIX-Gateway$   python3 ./mavlink2PX4G5.py -help
-usage: mavlink2PX4G5.py [-h] [-m PX4] [-g PYG5] [-e PYEFIS]
-options:
-  -h, --help            show this help message and exit
-  -m PX4, --px4 PX4     mavlink px4 dronekit connection string or address:port 172.17.0.1:14550
-  -g PYG5, --pyg5 PYG5  pyg5sim address:port 127.0.0.1:65432
-  -e PYEFIS, --pyefis PYEFIS pyefis address:port 127.0.0.1:2100
-
-if using "172.17.0.1:14550" from qgcs then docker will start up gazebo sim too  
+$ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+$ sitl #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+ USEAGE
+#  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
+$ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works
+$ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+$ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+$ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+$ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "udp://172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 ?
+#
+# dronekit connect strings 
+python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+python mavlinkMAVSDKdronekitCombined.py  -m 172.17.0.1:14540 -g 127.0.0.1:65432 -e 127.0.0.1:2100
+python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
+python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
+python3 ./mavlinkMAVSDKdronekitCombined.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
+python3 ./mavlinkMAVSDKdronekitCombined.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+# to start px4 headless sitl px4 gazebo sim locally via docker app:  
+$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2 
+# if connect string contains :// or "172.17.0.1:14550" then sitl is started
+ if(self.pyMAVPX4connect == "172.17.0.1:14550") or (self.pyMAVPX4connect == "udp://:14540")
+if using "172.17.0.1:14550" forwarded from qgcs then docker will start up gazebo sim too  
 seperately  
+# note that mavlink2PX4G5.py does not contain MAVSDK only dronekit mavutil
 python3 ./mavlink2PX4G5.py  -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
 python3 ./mavlink2PX4G5.py  -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 python3 ./mavlink2PX4G5.py  -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
 python3 ./mavlink2PX4G5.py  -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
-to starrt sitl px4 gazebo sim locally via docker app:  
+# to starrt sitl px4 gazebo sim locally via docker app:  
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
