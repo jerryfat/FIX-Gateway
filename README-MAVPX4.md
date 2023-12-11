@@ -6,7 +6,14 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 "pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
 =================================================================================================  
-## First release of mavlink2PX4G5.py which sends (real or sitl) PX4 or Ardupilot MAV data over IP to forked PyG5 and forked PyEfis (via FIXGW server), I added a new plugin and config files for FIXGW and README-MAVPX4G5.md. I moddified pyG5 by addinga new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also download forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. The only chnage to pyEfis is to use a window and 'fullscreen':true in pyEfis/pyefis/main.yaml config file see README-MAVPX4G5.md.
+# Second release Dec 11, 2023 of mavlink2PX4G5.py nd mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
+These repos will run an added demo using (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
+The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
+After connecting to sitl or real autopilot using mavlink over ip or serial usb ports
+the code recieves mavlink messages from autopilot and reformats and resends (real or sitl) PX4 or Ardupilot MAVLINK data over IP to forked PyG5 and forked PyEfis (via FIXGW server), 
+to FIXGW repo I have added a new plugin and config files for FIXGW and a README-MAVPX4G5.md. 
+I moddified pyG5 by adding a new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also added to forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. 
+The only change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file
 =================================================================================================
 
 ## to install everything (PyG5,pyEfis,FIXGW):  
@@ -162,6 +169,8 @@ or
 (no error if python 3.10-)
 
 =================================================================================================
+## Install MAVSDK the default used in example repo
+$ pip install mavsdk
 =================================================================================================
 ## Installing Dronekit
 DroneKit-Python can be installed on a Linux, Mac OSX, or Windows computer that has Python 2.7 and can install Python packages from the Internet.
