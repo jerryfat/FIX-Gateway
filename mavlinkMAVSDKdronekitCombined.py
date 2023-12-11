@@ -27,7 +27,7 @@ from datetime import datetime, timedelta
 # $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 # $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "udp://172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 ?
 #
-# dronekit connect strings
+# dronekit connect strings 
 #python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "172.17.0.1:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 #python mavlinkMAVSDKdronekitCombined.py  -m 172.17.0.1:14540 -g 127.0.0.1:65432 -e 127.0.0.1:2100
 #python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
