@@ -195,12 +195,41 @@ class MainThread(threading.Thread):
                     self.data_pickled = self.conn.recv(1024)
                     self.data_dict = pickle.loads(self.data_pickled)   
                     #print("FIXGW(run) received mavlink_data_dict:  ",self.data_dict)
-                    print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled), self.data_dict)
+                    #print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled)) #, self.data_dict)
                     # copy key, value pairs into data dict for efis                   
                     #try: self.parent.db_write("ALT", self.data_dict["alt"]/1000)
                     #except: pass
                     
                     # internal KEY = Data pack values form pickle data into internal dict for pyefis 
+                    # for MAVSDK recv msgs
+                    try: 
+                        self.parent.db_write("ALT",    self.data_dict["absolute_altitude_m"]*100)
+                        #print("\nALT mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("PITCH", self.data_dict["pitch_deg"]) 
+                        #print("\nPITCH mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("ROLL",  self.data_dict["roll_deg"])
+                        #print("\nROLL mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("YAW",   self.data_dict["yaw_deg"]) 
+                        #print("\nYAW mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("LAT",   self.data_dict["latitude_deg"]) 
+                        #print("\nLAT mavsdk")
+                    except: pass
+                    try: 
+                        self.parent.db_write("LONG",  self.data_dict["longitude_deg"]) 
+                        #print("\nLONG mavsdk")                        
+                    except: pass
+                    try: 
+                        self.parent.db_write("HEAD",   self.data_dict["heading_deg"]) 
+                        #print("\nHEAD mavsdk")
+                    except: pass
                     # for dronekit pymavlink data converter
                     try: # and fail no keys written
                         self.parent.db_write("ALT",    self.data_dict["alt"])
@@ -231,35 +260,7 @@ class MainThread(threading.Thread):
                         #print("\nHEAD dronekit")
                     except: pass
                     #
-                    # for MAVSDK recv msgs
-                    try: 
-                        self.parent.db_write("ALT",    self.data_dict["absolute_altitude_m"]*100)
-                        #print("\nALT mavsdk")
-                    except: pass
-                    try: 
-                        self.parent.db_write("PITCH", self.data_dict["pitch_deg"]) 
-                        #print("\nPITCH mavsdk")
-                    except: pass
-                    try: 
-                        self.parent.db_write("ROLL",  self.data_dict["roll_deg"])
-                        #print("\nROLL mavsdk")
-                    except: pass
-                    try: 
-                        self.parent.db_write("YAW",   self.data_dict["yaw_deg"]) 
-                        #print("\nYAW mavsdk")
-                    except: pass
-                    try: 
-                        self.parent.db_write("LAT",   self.data_dict["latitude_deg"]) 
-                        #print("\nLAT mavsdk")
-                    except: pass
-                    try: 
-                        self.parent.db_write("LONG",  self.data_dict["longitude_deg"]) 
-                        #print("\nLONG mavsdk")                        
-                    except: pass
-                    try: 
-                        self.parent.db_write("HEAD",   self.data_dict["heading_deg"]) 
-                        #print("\nHEAD mavsdk")
-                    except: pass
+                    
                 self.conn.close()
         '''import csv example
         Creating list of field names
