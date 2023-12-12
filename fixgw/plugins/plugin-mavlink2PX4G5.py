@@ -47,7 +47,7 @@ date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
 from platform import python_version
 print(python_version())
-
+'''
 try:
     # 👇️ using Python 3.10+
     from collections.abc import MutableMapping
@@ -56,7 +56,7 @@ except ImportError:
     from collections     import MutableMapping
 
 # 👇️ <class 'collections.abc.MutableMapping'>
-print(MutableMapping)
+print(MutableMapping)'''
 
 
 ################################################################################################

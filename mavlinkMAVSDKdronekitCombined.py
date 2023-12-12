@@ -170,7 +170,9 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
 
 def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
         global data_dict
-        print("--MAVSDK--Recvd msg:", msg)
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        print("--MAVSDK--Recvd:",end=" ") #print("--MAVSDK--Recvd:", end="\r")
         tmp = str(msg).split(" ") #print("tmp[1:]=", tmp[1:])
         text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:])) #print("text ",text)
         #print("testmsg:",text)
@@ -209,8 +211,9 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                         #msg.get_payload() ) #create byte wise stream from string text   
-                        print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data),len(data_dict)) #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
-                        #print("-%%%%- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
+                        #print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data),len(data_dict)) #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
+                        #print("-%%%%-len(pyG5)",len(serialized_data), end="")        
+                        print("-%%%%-len(pyG5)",len(serialized_data), end=" ")         
                     except:
                         print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSimMAVSDK()  ERROR Sending pickle serialized data... ") 
                         #print("pyG5SimAddrPort-",pyG5SimAddrPort)
@@ -225,13 +228,13 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                         #msg.get_payload() ) #create byte wise stream from string text   
-                        print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
-                        #print("-$$$$- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
+                        #print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
+                        print("-$$$$-len(pyEfis)",len(serialized_data), end=" ")                
                     except:
                         print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
                         #print("pyefisSimAddr-",pyefisSimAddr)
             conn.close
-        
+        print(date_time, end="\r")
         return
 
 #useMAVSDK = False
