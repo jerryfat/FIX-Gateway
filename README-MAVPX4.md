@@ -1,5 +1,6 @@
 
-# mp4 vid of Mavlink to PyG5 and pyEfis MAV to pickle dict converter by Jerry Fat
+# Mavlink to PyG5 and pyEfis MAV to pickle dict converter by Jerry Fat Dec 13, 2023
+# click on mp4 vid:
 from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 [![Watch the video](https://img.youtube.com/vi/6lV11DBxXB4/maxresdefault.jpg)](https://www.youtube.com/watch?v=6lV11DBxXB4)
 
