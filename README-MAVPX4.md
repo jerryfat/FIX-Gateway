@@ -15,12 +15,16 @@ for MAVLINK converter see: https://github.com/jerryfat/FIX-Gateway/blob/master/R
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
 
 
-for MAVLINK converter see this document you are reading
+for MAVLINK converter see this document you are reading:
+
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
 
-for origianl Readme.md see:
+
+for original Readme.md see:
+
 https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst)
+
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 =================================================================================================
