@@ -7,7 +7,7 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
   
 
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png)
-"Block Diagram of MAVLINK to pyG5 and pyEfis Converter"
+"Diagram of MAVLINK to pyG5 and pyEfis Converter"
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 =================================================================================================
@@ -21,8 +21,7 @@ to FIXGW repo I have added a new plugin and config files for FIXGW and a README-
 I moddified pyG5 by adding a new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also added to forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. 
 The only change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file
 
-## to install everything (PyG5,pyEfis,FIXGW):  
-###  
+## Install everything (PyG5,pyEfis,FIXGW):  
 create new dir  
 $ mkdir newdir  
 $ cd newdir  
@@ -35,7 +34,7 @@ install all the dependencies below instructions
 $cd FIX-Gateway  
 note that default.yaml config also starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
- # from FIXGW default.yaml config file, plugin-mavlink2PX4G5 plugin config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
+ from FIXGW default.yaml config file, plugin-mavlink2PX4G5 plugin config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
          mavlink2PX4G5:
            load:              yes
            module:            fixgw.plugins.plugin-mavlink2PX4G5
@@ -86,25 +85,25 @@ $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
 
 =================================================================================================
-## repaired this file for dronekit mymavlink
-## /usr/lib/python3.10/collections/__init__.py
+repaired this file for dronekit mymavlink
+/usr/lib/python3.10/collections/__init__.py
 '''import _collections_abc
 
 try: # for dronekit after python 3.8
-    # 👇️ using Python 3.10+
+     👇️ using Python 3.10+
     import _collections_abc
     from _collections_abc import MutableMapping
 except ImportError:
-    # 👇️ using Python 3.10-
+     👇️ using Python 3.10-
     import _collections
     from _collections     import MutableMapping
 
-## 👇️ <class '_collections_abc.MutableMapping'>
+👇️ <class '_collections_abc.MutableMapping'>
 print(MutableMapping)'''
 =================================================================================================
 
 ## if using Python3.10 and later you must add to file 
-## "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
+"/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
 
 replace line "from collections     import MutableMapping" with:
 ## Import DroneKit-Python
@@ -112,13 +111,13 @@ from platform import python_version
 print(python_version())
 
 try: # for dronekit after python 3.8
-    # 👇️ using Python 3.10+
+     👇️ using Python 3.10+
     from collections.abc import MutableMapping
 except ImportError:
-    # 👇️ using Python 3.10-
+     👇️ using Python 3.10-
     from collections     import MutableMapping
 
-/# 👇️ <class 'collections.abc.MutableMapping'>
+👇️ <class 'collections.abc.MutableMapping'>
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
 ==============
@@ -137,14 +136,14 @@ Traceback (most recent call last):
 ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
 
 fix line in /usr/lib/python3.10/collections/__init__.py
-'#'import _collections_abc
+import _collections_abc
 and replace with:
 try: # for dronekit after python 3.8
-    # 👇️ using Python 3.10+
+     👇️ using Python 3.10+
     import _collections_abc
     from _collections_abc import MutableMapping
 except ImportError:
-    # 👇️ using Python 3.10-
+     👇️ using Python 3.10-
     import _collections
     from _collections     import MutableMapping
 
