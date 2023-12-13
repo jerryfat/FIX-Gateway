@@ -7,7 +7,7 @@ screenshot:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 #"Screenshot Demo pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
-
+Bloack Diagram
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png)
 #"Diagram of MAVLINK to pyG5 and pyEfis Converter"
 
@@ -102,15 +102,15 @@ except ImportError:
     import _collections
     from _collections     import MutableMapping
 
-👇️ <class '_collections_abc.MutableMapping'>
+👇️ class '_collections_abc.MutableMapping'
 print(MutableMapping)'''
 =================================================================================================
 
 ## if using Python3.10 and later you must add to file 
 "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
 
-replace line "from collections     import MutableMapping" with:
-## Import DroneKit-Python
+replace line "from collections     import MutableMapping" with: 
+Import DroneKit-Python
 from platform import python_version
 print(python_version())
 
@@ -121,7 +121,7 @@ except ImportError:
      👇️ using Python 3.10-
     from collections     import MutableMapping
 
-👇️ <class 'collections.abc.MutableMapping'>
+👇️ class 'collections.abc.MutableMapping'
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
 ==============
@@ -131,7 +131,7 @@ another error possible
 from collections     import MutableMapping
 ImportError: cannot import name 'MutableMapping' from 'collections' (/usr/lib/python3.10/collections/__init__.py)
 error
-<class 'collections.abc.MutableMapping'>
+class 'collections.abc.MutableMapping'
 Traceback (most recent call last):
   File "/home/jf/MAVGCSenv144/JerryGCS144.py", line 53, in <module>
     from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
@@ -151,7 +151,7 @@ except ImportError:
     import _collections
     from _collections     import MutableMapping
 
- 👇️ <class '_collections_abc.MutableMapping'>
+ 👇️ class '_collections_abc.MutableMapping'
 print(MutableMapping)
 
 
