@@ -52,7 +52,7 @@ $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
            buffer_size:       1024
            timeout:           10.0 
 
-seperately to test apps:  
+👇️ seperately to test apps:  
 $ python3 ../pyG5/pyG5/pyG5Main.py -m hsi  
 $ python3 ../pyEfis/pyEfis.py  
 $ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
@@ -94,15 +94,15 @@ repaired this file for dronekit mymavlink
 '''import _collections_abc
 
 try: # for dronekit after python 3.8
-     👇️ using Python 3.10+
+     using Python 3.10+
     import _collections_abc
     from _collections_abc import MutableMapping
 except ImportError:
-     👇️ using Python 3.10-
+      using Python 3.10-
     import _collections
     from _collections     import MutableMapping
 
-👇️ class '_collections_abc.MutableMapping'
+ class '_collections_abc.MutableMapping'
 print(MutableMapping)'''
 =================================================================================================
 
@@ -115,13 +115,13 @@ from platform import python_version
 print(python_version())
 
 try: # for dronekit after python 3.8
-     👇️ using Python 3.10+
+    using Python 3.10+
     from collections.abc import MutableMapping
 except ImportError:
-     👇️ using Python 3.10-
+     using Python 3.10-
     from collections     import MutableMapping
 
-👇️ class 'collections.abc.MutableMapping'
+ class 'collections.abc.MutableMapping'
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
 ==============
