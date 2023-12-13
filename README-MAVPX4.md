@@ -221,10 +221,11 @@ Running on Raspberry Pi it is recommended to install FreeSans fonts in order to 
         > sudo apt-get install libfreetype6
 
 
-=================================================================================================
+
 ## Installation of pyEfis
 
 see https://github.com/makerplane/Documentation/blob/master/pyEFIS%20Documentation%20v0-4.pdf
+
 
 pyEfis works within the MakerPlane Avionics System of Systems and requires the FiX Gateway
 to pass data to and from the display application. It also has dependencies in order for the
@@ -291,7 +292,7 @@ Hints and tips on how to configure pyEFIS and the FiX gateway and launch automat
 startup are in the MakerPlane forum.
 http://www.makerplane.org/forum/
 end pyEfis
-================================================================================================
+
 
 =======================
 ## Docker installation
