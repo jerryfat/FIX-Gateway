@@ -143,15 +143,15 @@ fix line in /usr/lib/python3.10/collections/__init__.py
 import _collections_abc
 and replace with:
 try: # for dronekit after python 3.8
-     👇️ using Python 3.10+
+    using Python 3.10+
     import _collections_abc
     from _collections_abc import MutableMapping
 except ImportError:
-     👇️ using Python 3.10-
+     using Python 3.10-
     import _collections
     from _collections     import MutableMapping
 
- 👇️ class '_collections_abc.MutableMapping'
+class '_collections_abc.MutableMapping'
 print(MutableMapping)
 
 
