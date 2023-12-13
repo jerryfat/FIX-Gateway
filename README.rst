@@ -15,6 +15,9 @@ The primary use is as the interface to the pyEfis electronic flight information
 project. It can also be used to interface flight simulator software to 'real'
 hardware such as instrumentation or custom flight controls.
 
+for MAVLINK converter see: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
+![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
+
 Installation
 ------------
 

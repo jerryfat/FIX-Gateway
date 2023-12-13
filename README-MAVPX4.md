@@ -7,11 +7,20 @@ screenshot:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 #"Screenshot Demo pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
-Bloack Diagram
+Block Diagram
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png)
 #"Diagram of MAVLINK to pyG5 and pyEfis Converter"
 
+for MAVLINK converter see: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
+![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
 
+
+for MAVLINK converter see this document you are reading
+![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
+
+for origianl Readme.md see:
+https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
+![](https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst)
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 =================================================================================================
