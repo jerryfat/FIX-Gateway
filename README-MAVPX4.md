@@ -140,9 +140,10 @@ except ImportError:
      using Python 3.10-
     from collections     import MutableMapping
 
- class 'collections.abc.MutableMapping'
+class 'collections.abc.MutableMapping'
 print(MutableMapping)
 from dronekit import connect, Command, LocationGlobal 
+
 ==============
 another error possible
 
