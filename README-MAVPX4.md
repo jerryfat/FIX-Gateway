@@ -8,8 +8,11 @@ screenshot:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 #"Screenshot Demo pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
   
-Block Diagram
+Block Diagram:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png)
+=======
+![]([https://github.com/jerryfat/FIX-Gateway/blob/master/BlockDiagram-GIMP.png](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png))
+>>>>>>> c3490d083f29747f319f70edfa6d5555a0ba931c
 #"Diagram of MAVLINK to pyG5 and pyEfis Converter"
 
 for MAVLINK converter see: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
