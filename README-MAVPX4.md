@@ -32,20 +32,25 @@ https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
 
 
 By using these modded (by me) forked repos , a full virtual demo can be run out of the box as above movie mp4 .
-A complete demo is tested and working by cloning these repos and running the default.yaml script in FIXGW, 
-this will startup all the apps (pyG5 FIXGW, pyEfis, PX4 gazebo sitl and my converter code)
+A complete demo has been tested and working by cloning these repos and running the default.yaml script in FIXGW, 
+This script in FIXGW will startup all the apps (pyG5 FIXGW, pyEfis, PX4 gazebo sitl and my converter code)
 Tested with PX4 sitl, dronekit sitl, pixhawk over serial, over serial USB, over QGroundcontrol forwarding
 
+These forked repos are modified so they will run a real or demo autopilot using 'mavlinkMAVSDKdronekitCombined.py' 
+see the FIX-Gateway forked repo dir, new file 'mavlinkMAVSDKdronekitCombined.py'
 
-These forked repos are modified so that with my code they will run a real or demo autopilot using my (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
 The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
-After connecting to sitl or real autopilot using mavlink over ip or serial usb ports
-the code recieves mavlink messages from autopilot and reformats and resends (real or sitl) PX4 or Ardupilot MAVLINK data over IP to forked PyG5 and forked PyEfis (via FIXGW server), 
-to FIXGW repo I have added a new plugin and config files for FIXGW and a README-MAVPX4G5.md. 
-I moddified pyG5 by adding a new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also added to forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. 
-The only change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file
+After script tries connecting to a sitl or real autopilot (using mavlink over ip or serial usb ports)
+the converter code recieves mavlink messages from autopilot and reformats and resends (real or sitl) PX4 or Ardupilot MAVLINK data over IP to forked PyG5 and forked PyEfis (PyEfis via FIXGW server), 
+FIXGW repo modded has new added plugin and config files for FIXGW and also README-MAVPX4G5.md. 
+pyG5 modified by adding a new for now replacement listener code on the same port as xplane. see the README, 
 
-## Install everything (from my modified repos of PyG5,pyEfis,FIXGW):  
+in summary the FIXGW fork has changes made to accept and resend MAVLINK msgs. 
+Also added are forked pyEfis and forked pyG5 (whch accepts MAV messages via new listener and datahandler).
+minor display change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file so app runs in a window desktop pc
+
+
+## Install everything (from forked modified repos of PyG5,pyEfis,FIXGW):  
 create a new dir  
 $ mkdir newdir  
 $ cd newdir  
