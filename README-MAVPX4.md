@@ -39,7 +39,7 @@ So by cloning these repos and running the default.yaml script in FIXGW, will sta
 Tested with PX4 sitl, dronekit sitl, pixhawk over serial, over serial USB, over QGroundcontrol forwarding
 
 
-These forked repos are modified so that with my code sthey will run a demo using my (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
+These forked repos are modified so that with my code they will run a real or demo autopilot using my (mavlinkMAVSDKdronekitCombined.py) in the FIX-Gateway repo dir
 The demo runs a PX4 sitl sending mavlink data to pyG5 (modified) and pyEfis via FIXGW server
 After connecting to sitl or real autopilot using mavlink over ip or serial usb ports
 the code recieves mavlink messages from autopilot and reformats and resends (real or sitl) PX4 or Ardupilot MAVLINK data over IP to forked PyG5 and forked PyEfis (via FIXGW server), 
@@ -54,7 +54,7 @@ $ cd newdir
 clone the modified pyEfis and FIXGW and pyG5 repos:  
 $ git clone https://github.com/jerryfat/FIX-Gateway.git  
 $ git clone https://github.com/jerryfat/pyEfis.git  
-$ git clone https://github.com/blauret/pyG5.git  
+$ git clone https://github.com/jerryfat/pyG5.git  
 install all the dependencies below instructions  
 ## to run apps individually
 $cd FIX-Gateway  
