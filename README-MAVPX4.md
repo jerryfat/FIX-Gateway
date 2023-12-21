@@ -1,5 +1,5 @@
 
-# Mavlink to PyG5 and pyEfis MAV (to) python pickle dict converter by Jerry Fat Dec 13, 2023
+# Mavlink to PyG5 and pyEfis ( MAVlink to python pickle dict converter to pyEfis, pyG5 by Jerry Fat Dec 13, 2023
 Last updated Dec 21, 2023
 
 Block Diagram:
