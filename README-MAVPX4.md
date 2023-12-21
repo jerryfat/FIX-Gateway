@@ -51,15 +51,17 @@ minor display change to pyEfis app is to use a window after changing 'fullscreen
 
 
 ## Install everything (from forked modified repos of PyG5,pyEfis,FIXGW):  
-create a new dir  
-$ mkdir newdir  
+tested on Ubuntu 22.04 Mint , Python 3.10
+$ mkdir newdir    create a new dir  
 $ cd newdir  
-clone the modified pyEfis and FIXGW and pyG5 repos:  
+clone these forked and modified pyEfis and FIXGW and pyG5 repos:  
 $ git clone https://github.com/jerryfat/FIX-Gateway.git  
 $ git clone https://github.com/jerryfat/pyEfis.git  
 $ git clone https://github.com/jerryfat/pyG5.git  
 # all apps demo
-$ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+$ cd FIX-Gateway/fixgw
+$ fixgw.py script starts up FIXGW server and pyEfis and pyG5 and converter script and sitl and connects to sitl,qgcs,px4,ardupilot
+$ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 install many python dependencies below dronekit or MAVSDK which doesnt require changing system files in python 3.10 like dronekit
 
 ## to run app demo from FIXGW plugin called plugin-mavlink2PX4G5
