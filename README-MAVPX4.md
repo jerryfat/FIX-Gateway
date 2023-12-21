@@ -51,8 +51,8 @@ to FIXGW repo I have added a new plugin and config files for FIXGW and a README-
 I moddified pyG5 by adding a new listener on the same port as xplane. see the README, this is the FIXGW fork with chnages made for MAVLINK msgs. Also added to forked pyEfis and forked pyG5 whch accepts MAV messages via new listener and datahandler I wrote. 
 The only change to pyEfis app is to use a window after changing 'fullscreen':true in pyEfis/pyefis/main.yaml config file
 
-## Install everything (PyG5,pyEfis,FIXGW):  
-create new dir  
+## Install everything (from my modified repos of PyG5,pyEfis,FIXGW):  
+create a new dir  
 $ mkdir newdir  
 $ cd newdir  
 clone the modified pyEfis and FIXGW and pyG5 repos:  
@@ -60,11 +60,16 @@ $ git clone https://github.com/jerryfat/FIX-Gateway.git
 $ git clone https://github.com/jerryfat/pyEfis.git  
 $ git clone https://github.com/jerryfat/pyG5.git  
 install all the dependencies below instructions  
-## to run apps individually
-$cd FIX-Gateway  
-note that default.yaml config also starts up FIX server, pyEfis, pyG5 and sitl if ip addr is 172.17.0.1 or :14550 if qgcs or connects to mavlink source over /dev/serial acmo or usb0  
+
+## to run app demo from FIXGW plugin called plugin-mavlink2PX4G5
+( FIX-Gateway/fixgw/plugins/plugin-mavlink2PX4G5.py )
+(..newdir/FIX-Gateway/fixgw/plugins/plugin-mavlink2PX4G5.py)
+$ cd FIX-Gateway  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
- from FIXGW default.yaml config file, plugin-mavlink2PX4G5 plugin config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
+the FIX-Gateway/fixgw/config/default.yaml 'config' file plugin automagically (via xterms) starts up FIX server, pyEfis, pyG5 and 1. sitl if ip addr is 172.17.0.1 or 2. :14550 if qgcs or 3. connects to mavlink source over /dev/serial acmo 4. or usb0  
+
+ note: from FIXGW default.yaml config file, my new plugin-mavlink2PX4G5 plugin also has config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
+from FIX-Gateway/fixgw/config/default.yaml
          mavlink2PX4G5:
            load:              yes
            module:            fixgw.plugins.plugin-mavlink2PX4G5
@@ -78,12 +83,20 @@ $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
            buffer_size:       1024
            timeout:           10.0 
 
-👇️ seperately to test apps:  
+# to seperately launch or test apps from cli:  
+# all apps demo
+$ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+# seperate apps
 $ python3 ../pyG5/pyG5/pyG5Main.py -m hsi  
 $ python3 ../pyEfis/pyEfis.py  
-$ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
-$ sitl #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
- USEAGE
+
+# sitl from cli and connect
+$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+$ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+# connect to autopilot px4 or ardupilot over mavlink usb serial:
+$ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+
+ CLI USEAGE
 ##  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
 $ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works
 $ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
@@ -115,7 +128,7 @@ $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
 
 =================================================================================================
-repaired this file for dronekit mymavlink
+repaired local python 3.10 local installed dronekit mavlink
 /usr/lib/python3.10/collections/__init__.py
 '''import _collections_abc
 
@@ -133,6 +146,7 @@ print(MutableMapping)'''
 =================================================================================================
 
 ## if using Python3.10 and later you must add to file 
+repaired sytem python
 "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
 
 replace line "from collections     import MutableMapping" with: 
