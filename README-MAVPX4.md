@@ -1,7 +1,7 @@
 
-# Mavlink to PyG5 and pyEfis ( MAVlink to python pickle dict converter to pyEfis, pyG5 by Jerry Fat Dec 13, 2023
-Last updated Dec 21, 2023
+# Mavlink to PyG5 and pyEfis ( MAVlink to Python dictionary for pyEfis and pyG5 by Jerry Fat Dec 21, 2023
 
+#"Diagram of MAVLINK to pyG5 and pyEfis Converter with pyG5 and pyEfis changes"
 Block Diagram:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Block%20Diagram%20MAVtoPyG5Efis.png)
 
@@ -12,16 +12,9 @@ from: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 screenshot:
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/Screenshot%20from%202023-11-30%2017-57-49.png)
 #"Screenshot Demo pixhawk over 915mhz sik radios, driving my mavlink2PX4G5.py converter and modified pyG5 and added plugin to FIXGW to drive pyEfis"
-  
-
-
-=======
-
-#"Diagram of MAVLINK to pyG5 and pyEfis Converter"
 
 for MAVLINK converter see: https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/README-MAVPX4.md)
-
 
 for MAVLINK converter see this document you are reading:
 
@@ -38,8 +31,9 @@ https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
 =================================================================================================
 
 
-By using these modded (by me) forked repos , a full virtual demo can be run out of the box.
-So by cloning these repos and running the default.yaml script in FIXGW, will startup all the apps (pyG5 FIXGW, pyEfis, PX4 gazebo sitl and my converter code)
+By using these modded (by me) forked repos , a full virtual demo can be run out of the box as above movie mp4 .
+A complete demo is tested and working by cloning these repos and running the default.yaml script in FIXGW, 
+this will startup all the apps (pyG5 FIXGW, pyEfis, PX4 gazebo sitl and my converter code)
 Tested with PX4 sitl, dronekit sitl, pixhawk over serial, over serial USB, over QGroundcontrol forwarding
 
 
@@ -59,7 +53,9 @@ clone the modified pyEfis and FIXGW and pyG5 repos:
 $ git clone https://github.com/jerryfat/FIX-Gateway.git  
 $ git clone https://github.com/jerryfat/pyEfis.git  
 $ git clone https://github.com/jerryfat/pyG5.git  
-install all the dependencies below instructions  
+# all apps demo
+$ fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+install many python dependencies below dronekit or MAVSDK which doesnt require changing system files in python 3.10 like dronekit
 
 ## to run app demo from FIXGW plugin called plugin-mavlink2PX4G5
 ( FIX-Gateway/fixgw/plugins/plugin-mavlink2PX4G5.py )
@@ -68,7 +64,7 @@ $ cd FIX-Gateway
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
 the FIX-Gateway/fixgw/config/default.yaml 'config' file plugin automagically (via xterms) starts up FIX server, pyEfis, pyG5 and 1. sitl if ip addr is 172.17.0.1 or 2. :14550 if qgcs or 3. connects to mavlink source over /dev/serial acmo 4. or usb0  
 
- note: from FIXGW default.yaml config file, my new plugin-mavlink2PX4G5 plugin also has config parameters for pyG5 and pyEfis conversion data fom mavlink msgs
+ note: from the FIXGW default.yaml config file, the added plugin-mavlink2PX4G5 has config parameters for pyG5 and pyEfis conversion data for mavlink msgs
 from FIX-Gateway/fixgw/config/default.yaml
          mavlink2PX4G5:
            load:              yes
@@ -111,6 +107,8 @@ python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65
 python3 ./mavlinkMAVSDKdronekitCombined.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 python3 ./mavlinkMAVSDKdronekitCombined.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
 python3 ./mavlinkMAVSDKdronekitCombined.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+$ sudo tcpdump -i lo -n udp port 2100 'port for watching pyEfis data'
+$ sudo tcpdump -i lo -n udp port 65432 'port for watching pyG5 data'
 ## to start px4 headless sitl px4 gazebo sim locally via docker app:  
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2 
 ## if connect string contains :// or "172.17.0.1:14550" then sitl is started
@@ -126,7 +124,8 @@ python3 ./mavlink2PX4G5.py  -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 $ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
 $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
-
+$ sudo tcpdump -i lo -n udp port 2100 'port for pyEfis data'
+$ sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
 repaired local python 3.10 local installed dronekit mavlink
 /usr/lib/python3.10/collections/__init__.py
