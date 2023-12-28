@@ -127,12 +127,13 @@ python3 ./mavlink2PX4G5.py  -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.
 python3 ./mavlink2PX4G5.py  -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 python3 ./mavlink2PX4G5.py  -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
 python3 ./mavlink2PX4G5.py  -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
-## to starrt sitl px4 gazebo sim locally via docker app:  
-$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
-$ sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
-$ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
-$ sudo tcpdump -i lo -n udp port 2100 'port for pyEfis data'
-$ sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
+## to start sitl px4 gazebo sim locally via docker app:  
+
+sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+sudo tcpdump -i lo -n udp port 14550 'data from sitl at 172.17.0.1'  
+sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.1:14445 default forwarding by qgcs'  
+sudo tcpdump -i lo -n udp port 2100 'port for pyEfis data'
+sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
 
 =================================================================================================
