@@ -29,7 +29,7 @@ https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 =================================================================================================
-
+updated 2023-dec-28
 
 By using these modded (by me) forked repos , a full virtual demo can be run out of the box as above movie mp4 .
 A complete demo has been tested and working by cloning these repos and running the default.yaml script in FIXGW, 
@@ -134,45 +134,29 @@ $ sudo tcpdump -i lo -n udp port 14445 'port on jmavsim headless docker 127.0.0.
 $ sudo tcpdump -i lo -n udp port 2100 'port for pyEfis data'
 $ sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
-repaired local python 3.10 local installed dronekit mavlink
-/usr/lib/python3.10/collections/__init__.py
-'''import _collections_abc
 
-try: # for dronekit after python 3.8
-     using Python 3.10+
-    import _collections_abc
-    from _collections_abc import MutableMapping
-except ImportError:
-      using Python 3.10-
-    import _collections
-    from _collections     import MutableMapping
-
- class '_collections_abc.MutableMapping'
-print(MutableMapping)'''
 =================================================================================================
 
 ## if using Python3.10 and later you must add to file 
-repaired sytem python
-"/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py", line 49, in <module>
-
-replace line "from collections     import MutableMapping" with: 
-Import DroneKit-Python
-from platform import python_version
-print(python_version())
-
+## I had to repair system dronekit if python3.10+
+ "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py"
+#import _collections_abc  # replace this line with below
+# J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
 try: # for dronekit after python 3.8
-    using Python 3.10+
-    from collections.abc import MutableMapping
+    # using Python 3.10+
+    import _collections_abc
+    from _collections_abc import MutableMapping
 except ImportError:
-     using Python 3.10-
-    from collections     import MutableMapping
-
-class 'collections.abc.MutableMapping'
-print(MutableMapping)
-from dronekit import connect, Command, LocationGlobal 
-
+    # using Python 3.10-
+    import _collections
+    from _collections     import MutableMapping
+try:
+    collectionsAbc = _collections_abc
+except AttributeError:
+    collectionsAbc = _collections
+# end fix for python 3.10 dronekit issue MutableMapping error
 ==============
-another error possible
+another error possible too 
 
 /usr/lib/python3.10/collections/__init__.py
 from collections     import MutableMapping
@@ -201,6 +185,23 @@ except ImportError:
 class '_collections_abc.MutableMapping'
 print(MutableMapping)
 
+=================================================================================================
+
+repaired local python 3.10 local installed dronekit mavlink
+/usr/lib/python3.10/collections/__init__.py
+'''import _collections_abc
+
+try: # for dronekit after python 3.8
+     using Python 3.10+
+    import _collections_abc
+    from _collections_abc import MutableMapping
+except ImportError:
+      using Python 3.10-
+    import _collections
+    from _collections     import MutableMapping
+
+ class '_collections_abc.MutableMapping'
+print(MutableMapping)'''
 
 
 =================================================================================================
