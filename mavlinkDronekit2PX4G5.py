@@ -115,6 +115,7 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
     tmp9= tmp8.replace(": \"" , ": ") #  ' to " keys for pyefis #print("tmp9=", tmp9)
     tmp10= tmp9.replace("\"," , ",") #  ", to , keys for pyefis #print("tmp10=", tmp10)
     tmp11= tmp10.replace("\"}" , "}") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
+    tmp12= tmp11.replace("nan" , "0.0") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
     #
     # send data to pyG5
     if(len(pyG5SimAddrPort) != 0):
@@ -135,7 +136,7 @@ def SendAttitudeDataToG5simEfisSim(msg): # format and load as dict and then pick
     # send data to pyEfis
     if(len(pyefisSimAddrPort) != 0):
         # convert text string from above into a data_dict{}
-        data_dict.update(json.loads(tmp11))
+        data_dict.update(json.loads(tmp12))
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
                     serialized_data = pickle.dumps(data_dict)   

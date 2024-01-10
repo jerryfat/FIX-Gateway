@@ -94,14 +94,17 @@ $ python3 ../pyG5/pyG5/pyG5Main.py -m hsi
 $ python3 ../pyEfis/pyEfis.py  
 
 # sitl from cli and connect
+https://github.com/JonasVautherin/px4-gazebo-headless
+$ sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+docker run --rm -it jonasvautherin/px4-gazebo-headless:1.14.0
 $ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 # connect to autopilot px4 or ardupilot over mavlink usb serial:
 $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 
  CLI USEAGE
 ##  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
-$ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works
+$ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works with gazebo px4 headless 1.14 ver
 $ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 $ python mavlinkMAVSDKdronekitCombined.py  -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 $ python3 FIX-Gateway/mavlinkMAVSDKdronekitCombined.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
@@ -137,12 +140,28 @@ sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
 
 =================================================================================================
-
-## if using Python3.10 and later you must add to file 
-## I had to repair system dronekit if python3.10+
+""If I have correctly understood the error, and the evolution between Python 3.9 and 3.10, then I propose the following correction (to be confirmed by the owners of the module):
+Replace "collections.MutableMapping" by "collections.abc.MutableMapping" (in the "dronekit/__init__.py" file).""
+## if using Python3.10 and later you must add to file /usr/lib/python3.10/collections/__init__.py
+#
+print("using python 3.10 /usr/lib/python3.10/collections/__init__.py")
+#from _collections_abc import MutableMapping #(no error if python 3.10+) or from collections import MutableMapping (no error if python 3.10-)
+#/usr/lib/python3.10/collections/__init__.py
+# replace line 
+#import _collections_abc # orig
+# with:
+from _collections_abc import MutableMapping 
+import _collections_abc 
+#
+#
+print("using unchanged ~/.local/lib/python3.10/site-packages/dronekit/__init__.py")
+import collections
+#
+''' import _collections_abc # orig
+I had to repair system dronekit if python3.10+
  "/home/jf/.local/lib/python3.10/site-packages/dronekit/__init__.py"
-#import _collections_abc  # replace this line with below
-# J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10
+import _collections_abc  # replace this line with below
+J.FAT added code below for import MutableMapping dependency dronekit issue starting with python3.10'''
 try: # for dronekit after python 3.8
     # using Python 3.10+
     import _collections_abc
@@ -155,6 +174,7 @@ try:
     collectionsAbc = _collections_abc
 except AttributeError:
     collectionsAbc = _collections
+
 # end fix for python 3.10 dronekit issue MutableMapping error
 ==============
 another error possible too 

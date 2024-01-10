@@ -13,12 +13,22 @@ from mavsdk import System
 from dronekit import connect, Command, LocationGlobal # from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
 from pymavlink import mavutil
 
+'''# changes made to /usr/lib/python3.10/collections/__init__.py
+from _collections_abc import MutableMapping 
+import _collections_abc 
+
+#import _collections_abc # orig'''
+
 from math import *
 
 from datetime import datetime, timedelta
 # timestamp date_time
 # fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 # sitl #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+#docker run --rm -it jonasvautherin/px4-gazebo-headless:1.14.0
+#$ sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0
+# python mavlinkMAVSDKdronekitCombined.py -m "127.0.0.1:14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100 # px4 sitl using docker and qgcs forwarding on 14445
+#https://github.com/JonasVautherin/px4-gazebo-headless
 # USEAGE
 #  MAVSDK connect strings, use :// to automagically use MAVSDK libs below
 # $ python mavlinkMAVSDKdronekitCombined.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100 #works
@@ -118,9 +128,10 @@ print("parsed args: Px4simAddrPort-", Px4simAddrPort, "  pyG5SimAddrPort-",pyG5S
 #to starrt sitl px4 gazebo sim locally via docker app:  
 #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 ################################################################################################
+
 def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
     global data_dict
-    print("--DRONEKIT--Recvd msg:",msg)
+    print("--DRONEKIT--Recvd msgId:", msg.get_msgId(), "msg:", msg )
     tmp = str(msg).split(" ") #print("tmp[1:]=", tmp[1:])
     text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:])) #print("text ",text)
     tmp2= str(tmp[1:]).replace("'{","'") #print("tmp2=", tmp2)
@@ -134,6 +145,7 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
     tmp9= tmp8.replace(": \"" , ": ") #  ' to " keys for pyefis #print("tmp9=", tmp9)
     tmp10= tmp9.replace("\"," , ",") #  ", to , keys for pyefis #print("tmp10=", tmp10)
     tmp11= tmp10.replace("\"}" , "}") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
+    tmp12= tmp11.replace("nan" , "0.0") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
     #
     # send data to pyG5
     if(len(pyG5SimAddrPort) != 0):
@@ -144,7 +156,7 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
                     serialized_data = pickle.dumps(data_dict)   
                     conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                     #msg.get_payload() ) #create byte wise stream from string text   
-                    print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data),len(data_dict))  #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort, tmp8)
+                    print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), len(data_dict) ",len(serialized_data),len(data_dict))  #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort, tmp8)
                     #print("-%%%%- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
                 except:
                     print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSimDronekit()  ERROR Sending pickle serialized data... ") 
@@ -154,13 +166,13 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
     # send data to pyEfis
     if(len(pyefisSimAddrPort) != 0):
         # convert text string from above into a data_dict{}
-        data_dict.update(json.loads(tmp11))
+        data_dict.update(json.loads(tmp12))
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
                     serialized_data = pickle.dumps(data_dict)   
                     conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                     #msg.get_payload() ) #create byte wise stream from string text   
-                    print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort", tmp11)
+                    print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), len(data_dict) " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort", tmp11)
                     #print("-$$$$- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
                 except:
                     print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
@@ -173,6 +185,7 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("--MAVSDK--Rxd:", len(str(msg)), end="\r") #print("--MAVSDK--Recvd:", end="\r") , str(msg).split(":")[0] , len(str(msg))
+        #print("--MAVSDK--Recvd msg",  msg )
         tmp = str(msg).split(" ") #print("tmp[1:]=", tmp[1:])
         text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:])) #print("text ",text)
         #print("testmsg:",text)
@@ -211,7 +224,7 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                         #msg.get_payload() ) #create byte wise stream from string text   
-                        #print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), data_dict len= ",len(serialized_data),len(data_dict)) #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
+                        print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), len(data_dict) ",len(serialized_data),len(data_dict)) #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
                         #print("-%%%%-len(pyG5)",len(serialized_data), end="")        
                         #print("-%%%%-len(pyG5)",len(serialized_data), end=" ")         
                     except:
@@ -228,7 +241,7 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
                         #msg.get_payload() ) #create byte wise stream from string text   
-                        #print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), data_dict len= " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
+                        print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), len(data_dict) " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
                         #print("-$$$$-len(pyEfis)",len(serialized_data), end=" ")                
                     except:
                         print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
@@ -300,7 +313,7 @@ if (useDronekit == True):
     time.sleep(1) 
 
     app.exec()
-
+# loop here until quit or forever else run asyn version below
 ###############################################################################################################################
 ###############################################################################################################################
 ###############################################################################################################################
@@ -347,6 +360,7 @@ async def print_position(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK position msg converting") #, sending to G5 and or Efis(): ", date_time," ", position)
+        print("--MAVSDK--Recvd position msg",  position )
         SendAttitudeDataToG5simEfisSimMAVSDK(position)
 
 async def print_heading(drone):
@@ -355,6 +369,7 @@ async def print_heading(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@-Received from ",Px4simAddrPort," MAVSDK heading converting") #, sending to G5 and or Efis(): ", date_time," ", heading)
+        print("--MAVSDK--Recvd heading msg",  heading )
         SendAttitudeDataToG5simEfisSimMAVSDK(heading)
 
 async def print_attitude_euler(drone):
@@ -363,16 +378,17 @@ async def print_attitude_euler(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK attitude_euler converting") #", sending to G5 and or Efis(): ", date_time," ", attitude_euler)
+        print("--MAVSDK--Recvd attitude_euler msg",  attitude_euler )
         SendAttitudeDataToG5simEfisSimMAVSDK(attitude_euler)
 
 async def print_battery(drone):
     async for battery in drone.telemetry.battery():
-        print(f"Battery: {battery.remaining_percent}")
+        print(f"--MAVSDK--Recvd Battery{battery} %:{battery.remaining_percent}")
 
 
 async def print_gps_info(drone):
     async for gps_info in drone.telemetry.gps_info():
-        print(f"GPS info: {gps_info}")
+        print(f"--MAVSDK--Recvd GPS_info: {gps_info}")
 
 
 async def print_in_air(drone):
