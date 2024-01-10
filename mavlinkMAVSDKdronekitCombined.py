@@ -120,7 +120,8 @@ if args.pyefis:
 
 
 print("parsed args: Px4simAddrPort-", Px4simAddrPort, "  pyG5SimAddrPort-",pyG5SimAddrPort,"  pyefisSimAddrPort-",pyefisSimAddrPort)
-#$ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+#$ python telemetry.py -m ":14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+#$ python telemetry.py -m "udp://:14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 #python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
 #python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
 #python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  

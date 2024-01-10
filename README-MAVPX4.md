@@ -95,6 +95,7 @@ $ python3 ../pyEfis/pyEfis.py
 
 # sitl from cli and connect
 https://github.com/JonasVautherin/px4-gazebo-headless
+
 $ sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0
 $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
 docker run --rm -it jonasvautherin/px4-gazebo-headless:1.14.0
