@@ -134,7 +134,8 @@ class MainThread(threading.Thread):
           (self.pyMAVPX4connect == "udp:127.0.0.1:14445") or(self.pyMAVPX4connect == "udp:172.17.0.1:14540") or \
           (self.pyMAVPX4connect == "udp://:14445"): # launch sitl if connection string matches "172.17.0.1:14550"
             print("$$$-starting PX4 SIM subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
-            command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
+            #command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
+            command = 'sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0'
             subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             time.sleep(5) # let sitl startup before connecting
         #
