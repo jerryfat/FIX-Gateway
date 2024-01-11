@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths" style=""><script type="text/javascript" async="" src="Example%20Channels%20and%20Channel%20Overrides_files/js"></script><script type="text/javascript" async="" src="Example%20Channels%20and%20Channel%20Overrides_files/analytics.js"></script><script async="" src="Example%20Channels%20and%20Channel%20Overrides_files/analytics.js"></script><script>
+    (function() {
+    class RuffleMimeType {
+        constructor(a, b, c) {
+            this.type = a, this.description = b, this.suffixes = c
+        }
+    }
+    class RuffleMimeTypeArray {
+        constructor(a) {
+            this.__mimetypes = [], this.__named_mimetypes = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__mimetypes.length;
+            this.__mimetypes.push(a), this.__named_mimetypes[a.type] = a, this[a.type] = a, this[b] = a
+        }
+        item(a) {
+            return this.__mimetypes[a]
+        }
+        namedItem(a) {
+            return this.__named_mimetypes[a]
+        }
+        get length() {
+            return this.__mimetypes.length
+        }
+    }
+    class RufflePlugin extends RuffleMimeTypeArray {
+        constructor(a, b, c, d) {
+            super(d), this.name = a, this.description = b, this.filename = c
+        }
+        install(a) {
+            a.enabledPlugin || (a.enabledPlugin = this), super.install(a)
+        }
+    }
+    class RufflePluginArray {
+        constructor(a) {
+            this.__plugins = [], this.__named_plugins = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__plugins.length;
+            this.__plugins.push(a), this.__named_plugins[a.name] = a, this[a.name] = a, this[b] = a
+        }
+        item(a) {
+            return this.__plugins[a]
+        }
+        namedItem(a) {
+            return this.__named_plugins[a]
+        }
+        get length() {
+            return this.__plugins.length
+        }
+    }
+    const FLASH_PLUGIN = new RufflePlugin("Shockwave Flash", "Shockwave Flash 32.0 r0", "ruffle.js", [new RuffleMimeType("application/futuresplash", "Shockwave Flash", "spl"), new RuffleMimeType("application/x-shockwave-flash", "Shockwave Flash", "swf"), new RuffleMimeType("application/x-shockwave-flash2-preview", "Shockwave Flash", "swf"), new RuffleMimeType("application/vnd.adobe.flash-movie", "Shockwave Flash", "swf")]);
+
+    function install_plugin(a) {
+        navigator.plugins.install || Object.defineProperty(navigator, "plugins", {
+            value: new RufflePluginArray(navigator.plugins),
+            writable: !1
+        }), navigator.plugins.install(a), 0 < a.length && !navigator.mimeTypes.install && Object.defineProperty(navigator, "mimeTypes", {
+            value: new RuffleMimeTypeArray(navigator.mimeTypes),
+            writable: !1
+        });
+        for (var b = 0; b < a.length; b += 1) navigator.mimeTypes.install(a[b])
+    }
+    install_plugin(FLASH_PLUGIN);
+})();
+</script><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	
+		<link rel="stylesheet" href="Example%20Channels%20and%20Channel%20Overrides_files/badge_only.css" type="text/css">
+	
+		<link rel="stylesheet" href="Example%20Channels%20and%20Channel%20Overrides_files/pygments.css" type="text/css">
+	
+
+	<link rel="stylesheet" href="Example%20Channels%20and%20Channel%20Overrides_files/style.css">
+	<script src="Example%20Channels%20and%20Channel%20Overrides_files/modernizr.js"></script>
+	<link href="http://fonts.googleapis.com/css?family=PT+Serif:400,700" rel="stylesheet" type="text/css">
+
+	
+		<title>Example: Channels and Channel Overrides</title>
+	
+
+	<script type="text/javascript">
+		var DOCUMENTATION_OPTIONS = {
+			URL_ROOT: '',
+			VERSION: '2.4.0',
+			COLLAPSE_INDEX: false,
+			FILE_SUFFIX: '.html',
+			HAS_SOURCE: true
+		};
+	</script>
+
+
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="https://dronekit-python.readthedocs.io/en/latest/examples/channel_overrides.html">
+
+<link rel="stylesheet" href="Example%20Channels%20and%20Channel%20Overrides_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = "examples/channel_overrides"
+READTHEDOCS_DATA['source_suffix'] = ".rst"
+</script>
+
+<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/readthedocs-analytics.js"></script><script src="Example%20Channels%20and%20Channel%20Overrides_files/js_002" type="text/javascript" async=""></script>
+
+<!-- end RTD <extrahead> -->
+<meta http-equiv="origin-trial" content="AymqwRC7u88Y4JPvfIF2F37QKylC04248hLCdJAsh8xgOfe/dVJPV3XS3wLFca1ZMVOtnBfVjaCMTVudWM//5g4AAAB7eyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjk1MTY3OTk5LCJpc1RoaXJkUGFydHkiOnRydWV9"></head>
+<body>
+	<nav id="topnav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button class="navbar-toggle collapsed icon-facebook-sign" type="button" data-toggle="collapse" data-target="#collapsable-topnav">
+					<i class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="http://dronekit.io/">
+					<img src="Example%20Channels%20and%20Channel%20Overrides_files/new-DK-logo-color.svg" alt="3DR">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse" id="collapsable-topnav">
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="https://cloud.dronekit.io/" class="cloud">Cloud</a>
+					</li>
+					<li>
+						<a href="http://python.dronekit.io/" class="air">Python</a>
+					</li>
+					<li>
+						<a href="http://android.dronekit.io/" class="ground">Android</a>
+					</li>
+					<li>
+						<a href="http://dronekit.io/support" class="support">Support</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row gray-bg">
+			<div class="col-sm-3 col-md-2 col-sidebar">
+
+        
+					
+	<div id="sidebar-search" role="search">
+		<form id="rtd-search-form" class="form-inline" action="../search.html" method="get">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+				<input class="form-control" type="text" name="q" placeholder="Search...">
+			</div>
+			<input type="hidden" name="check_keywords" value="yes">
+			<input type="hidden" name="area" value="default">
+		</form>
+	</div>
+        
+				<div id="gray-sidebar" class="container-fluid">
+	        
+	          
+	          
+	              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/index.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/overview.html">About DroneKit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/overview.html#open-source-community">Open source community</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/overview.html#compatibility">Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/overview.html#api-features">API features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/overview.html#technical-support">Technical support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#latest-release">Latest release</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#changelog">Changelog</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-9-1-2017-04-21">Version 2.9.1 (2017-04-21)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-9-0-2016-08-29">Version 2.9.0 (2016-08-29)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-8-0-2016-07-15">Version 2.8.0 (2016-07-15)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-7-0-2016-06-21">Version 2.7.0 (2016-06-21)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-6-0-2016-06-17">Version 2.6.0 (2016-06-17)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-5-0-2016-05-04">Version 2.5.0 (2016-05-04)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-4-0-2016-02-29">Version 2.4.0 (2016-02-29)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-3-0-2016-02-26">Version 2.3.0 (2016-02-26)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-2-0-2016-02-19">Version 2.2.0 (2016-02-19)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-1-0-2016-02-16">Version 2.1.0 (2016-02-16)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-0-2-2015-11-30">Version 2.0.2 (2015-11-30)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#version-2-0-0-2015-11-23">Version 2.0.0 (2015-11-23)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#all-releases">All releases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/release_notes.html#working-with-releases">Working with releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html">Migrating to DKPY 2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#launching-scripts">Launching scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#code-changes">Code changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#connecting-to-a-vehicle">Connecting to a vehicle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#connection-status-checks">Connection status checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#script-completion-checks">Script completion checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#command-line-arguments">Command line arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#current-script-directory">Current script directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#vehicle-location">Vehicle.location</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#takeoff-and-movement-commands">Takeoff and movement commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#home-location">Home location</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#missions-and-waypoints">Missions and Waypoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#observing-attribute-changes">Observing attribute changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#parameter-changes">Parameter changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#intercepting-mavlink-messages">Intercepting MAVLink Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#new-attributes">New attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#channel-overrides">Channel Overrides</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/migrating.html#debugging">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/about/license.html">Open Source Licence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/quick_start.html#basic-hello-drone">Basic “Hello Drone”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/quick_start.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/index.html">Developing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/installation.html">Installing DroneKit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/companion-computers.html">Companion Computers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/companion-computers.html#raspberrypi">RaspberryPi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/companion-computers.html#intel-edison">Intel Edison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/companion-computers.html#beagleboneblack">BeagleBoneBlack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/companion-computers.html#odroid">Odroid</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html">Simulated Vehicle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#dronekit-sitl">DroneKit-SITL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#running-sitl">Running SITL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#connecting-to-dronekit-sitl">Connecting to DroneKit-SITL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#dronekit-sitl-python-api">DroneKit-SITL Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#building-sitl-from-source">Building SITL from source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/sitl_setup.html#connecting-an-additional-ground-station">Connecting an additional Ground Station</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#general-considerations">General considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#connecting">Connecting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#launch-sequence">Launch sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#movement-commands">Movement commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#vehicle-information">Vehicle information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#missions-and-waypoints">Missions and waypoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#monitor-and-react-to-state-changes">Monitor and react to state changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#sleep-the-script-when-not-needed">Sleep the script when not needed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#exiting-a-script">Exiting a script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#subclass-vehicle">Subclass Vehicle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#debugging">Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#launching-scripts">Launching scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/best_practice.html#current-script-directory">Current script directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/coding_standards.html">Coding Standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/index.html">Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html">Connecting to a Vehicle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html#get-started-connect-string">Connection string options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html#connecting-to-multiple-vehicles">Connecting to multiple vehicles</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html">Vehicle State and Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#attributes">Attributes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#getting-attributes">Getting attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#setting-attributes">Setting attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#observing-attribute-changes">Observing attribute changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#home-location">Home location</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#parameters">Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#getting-parameters">Getting parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#setting-parameters">Setting parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#listing-all-parameters">Listing all parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#observing-parameter-changes">Observing parameter changes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/vehicle_state_and_parameters.html#known-issues">Known issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/taking_off.html">Taking Off</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html">Guiding and Controlling Copter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#controlling-vehicle-movement">Controlling vehicle movement</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#position-control">Position control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#velocity-control">Velocity control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#acceleration-and-force-control">Acceleration and force control</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#guided-mode-commands">Guided mode commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#sending-messages-commands">Sending messages/commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#setting-the-yaw">Setting the Yaw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#setting-the-roi">Setting the ROI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#command-acknowledgements-and-response-values">Command acknowledgements and response values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#frame-conversion-functions">Frame conversion functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/copter/guided_mode.html#other-information">Other information</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html">Missions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#mission-command-overview">Mission Command Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#download-current-mission">Download current mission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#clearing-current-mission">Clearing current mission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#creating-adding-mission-commands">Creating/adding mission commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#modifying-missions">Modifying missions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#running-and-monitoring-missions">Running and monitoring missions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#handling-the-end-of-a-mission">Handling the end of a mission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#useful-mission-functions">Useful Mission functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#load-a-mission-from-a-file">Load a mission from a file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#save-a-mission-to-a-file">Save a mission to a file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#get-distance-to-waypoint">Get distance to waypoint</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/auto_mode.html#useful-links">Useful Links</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/debugging.html">Debugging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/debugging.html#pdb-the-python-debugger">pdb - The Python Debugger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/debugging.html#pudb-a-full-screen-console-based-python-debugger">pudb - A full-screen, console-based Python debugger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/debugging.html#print-log-statements">Print/log statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/debugging.html#other-ides-debuggers">Other IDEs/debuggers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/mavlink_messages.html">MAVLink Messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/mavlink_messages.html#creating-a-message-listener">Creating a message listener</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/mavlink_messages.html#watching-all-messages">Watching all messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/mavlink_messages.html#removing-an-observer">Removing an observer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/running_examples.html">Running the Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/vehicle_state.html">Vehicle State</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/vehicle_state.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/vehicle_state.html#how-does-it-work">How does it work?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/vehicle_state.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/vehicle_state.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html">Simple Goto</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#how-does-it-work">How does it work?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#takeoff">Takeoff</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#flying-to-a-point-simple-goto">Flying to a point - simple_goto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#rtl-return-to-launch">RTL - Return to launch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/simple_goto.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html">Guided Movement and Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#how-does-it-work">How does it work?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#goto-convenience-function">goto() - convenience function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#send-ned-velocity">send_ned_velocity()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#send-global-velocity">send_global_velocity()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#goto-position-target-global-int">goto_position_target_global_int()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#goto-position-target-local-ned">goto_position_target_local_ned()</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#testbed-settings">Testbed settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/guided-set-speed-yaw-demo.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_basic.html">Basic Mission</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_basic.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_basic.html#how-does-it-work">How does it work?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_basic.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_basic.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_import_export.html">Mission Import/Export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_import_export.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_import_export.html#how-does-it-work">How does it work?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_import_export.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/mission_import_export.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html">Create Attribute in App</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#how-does-it-work">How does it work?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#subclassing-vehicle">Subclassing Vehicle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#using-the-vehicle-subclass">Using the Vehicle subclass</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/create_attribute.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/follow_me.html">Follow Me (Linux only)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/follow_me.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/follow_me.html#how-does-it-work">How does it work?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/follow_me.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html">Drone Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#screenshots">Screenshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#how-it-works">How it works</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#using-attribute-observers">Using attribute observers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#starting-cherrypy-from-a-dronekit-application">Starting CherryPy from a DroneKit application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/drone_delivery.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html">Flight Replay</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#how-it-works">How it works</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#getting-the-points">Getting the points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#setting-the-new-waypoints">Setting the new waypoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#known-issues">Known issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html#source-code">Source code</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Channel Overrides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-example">Running the example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-does-it-work">How does it work?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source-code">Source code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/index.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/getting_started.html">How you can Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html">Contributing to the API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html#submitting-changes">Submitting changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html#test-code">Test code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html#setting-up-local-testing">Setting up local testing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html#unit-tests">Unit tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_api.html#integration-tests">Integration tests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_documentation.html">Contributing to the Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_documentation.html#documentation-system-overview">Documentation system overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_documentation.html#submitting-changes">Submitting changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_documentation.html#building-the-docs">Building the docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/contributions_documentation.html#style-guide">Style guide</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_windows.html">Building DroneKit-Python on Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_windows.html#install-dronekit-using-winpython-command-line">Install DroneKit using WinPython command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_windows.html#fetch-and-build-dronekit-source">Fetch and build DroneKit source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_windows.html#updating-dronekit">Updating DroneKit</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_linux.html">Building DroneKit-Python on Linux</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_linux.html#fetch-and-build-dronekit-source">Fetch and build DroneKit source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/contributing/developer_setup_linux.html#updating-dronekit">Updating DroneKit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/automodule.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference external" href="http://python.dronekit.io/genindex.html">Index</a></li>
+</ul>
+</li>
+</ul>
+
+	          
+	        
+				</div>
+			</div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div id="api-content">
+					
+  <div class="section" id="example-channels-and-channel-overrides">
+<span id="vehicle-state-channel-override"></span><span id="example-channel-overrides"></span><h1>Example: Channels and Channel Overrides<a class="headerlink" href="#example-channels-and-channel-overrides" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to get channel information and to get/set channel-override information.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Channel overrides (a.k.a. “RC overrides”) are highly dis-commended (they are primarily intended
+for simulating user input and when implementing certain types of joystick control).</p>
+<p>Instead use the appropriate MAVLink commands like DO_SET_SERVO/DO_SET_RELAY, or more generally set
+the desired position or direction/speed.</p>
+<p class="last">If you have no choice but to use a channel-override please explain why in a
+<a class="reference external" href="https://github.com/dronekit/dronekit-python/issues">Github issue</a> and we will attempt to find a
+better alternative.</p>
+</div>
+<div class="section" id="running-the-example">
+<h2>Running the example<a class="headerlink" href="#running-the-example" title="Permalink to this headline">¶</a></h2>
+<p>The example can be run as described in <a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/examples/running_examples.html"><span class="doc">Running the Examples</span></a> (which in turn assumes that the vehicle
+and DroneKit have been set up as described in <a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/develop/installation.html#installing-dronekit"><span class="std std-ref">Installing DroneKit</span></a>).</p>
+<p>In summary, after cloning the repository:</p>
+<ol class="arabic">
+<li><p class="first">Navigate to the example folder as shown:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> dronekit-python/examples/channel_overrides/
+</pre></div>
+</div>
+</li>
+<li><p class="first">You can run the example against a simulator (DroneKit-SITL) by specifying the Python script without any arguments.
+The example will download SITL binaries (if needed), start the simulator, and then connect to it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python channel_overrides.py
+</pre></div>
+</div>
+<p>On the command prompt you should see (something like):</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Starting</span> <span class="n">copter</span> <span class="n">simulator</span> <span class="p">(</span><span class="n">SITL</span><span class="p">)</span>
+<span class="n">SITL</span> <span class="n">already</span> <span class="n">Downloaded</span><span class="o">.</span>
+<span class="n">Connecting</span> <span class="n">to</span> <span class="n">vehicle</span> <span class="n">on</span><span class="p">:</span> <span class="n">tcp</span><span class="p">:</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5760</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">APM</span><span class="p">:</span><span class="n">Copter</span> <span class="n">V3</span><span class="o">.</span><span class="mi">3</span> <span class="p">(</span><span class="n">d6053245</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Frame</span><span class="p">:</span> <span class="n">QUAD</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Calibrating</span> <span class="n">barometer</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Initialising</span> <span class="n">APM</span><span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">barometer</span> <span class="n">calibration</span> <span class="n">complete</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">GROUND</span> <span class="n">START</span>
+<span class="n">Channel</span> <span class="n">values</span> <span class="kn">from</span> <span class="nn">RC</span> <span class="n">Tx</span><span class="p">:</span> <span class="p">{</span><span class="s1">'1'</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s1">'3'</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">:</span> <span class="mi">1800</span><span class="p">,</span> <span class="s1">'4'</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s1">'7'</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">:</span> <span class="mi">1800</span><span class="p">}</span>
+<span class="n">Read</span> <span class="n">channels</span> <span class="n">individually</span><span class="p">:</span>
+ <span class="n">Ch1</span><span class="p">:</span> <span class="mi">1500</span>
+ <span class="n">Ch2</span><span class="p">:</span> <span class="mi">1500</span>
+ <span class="n">Ch3</span><span class="p">:</span> <span class="mi">1000</span>
+ <span class="n">Ch4</span><span class="p">:</span> <span class="mi">1500</span>
+ <span class="n">Ch5</span><span class="p">:</span> <span class="mi">1800</span>
+ <span class="n">Ch6</span><span class="p">:</span> <span class="mi">1000</span>
+ <span class="n">Ch7</span><span class="p">:</span> <span class="mi">1000</span>
+ <span class="n">Ch8</span><span class="p">:</span> <span class="mi">1800</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">channels</span><span class="p">:</span> <span class="mi">8</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{}</span>
+<span class="n">Set</span> <span class="n">Ch2</span> <span class="n">override</span> <span class="n">to</span> <span class="mi">200</span> <span class="p">(</span><span class="n">indexing</span> <span class="n">syntax</span><span class="p">)</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'2'</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+ <span class="n">Ch2</span> <span class="n">override</span><span class="p">:</span> <span class="mi">200</span>
+<span class="n">Set</span> <span class="n">Ch3</span> <span class="n">override</span> <span class="n">to</span> <span class="mi">300</span> <span class="p">(</span><span class="n">dictionary</span> <span class="n">syntax</span><span class="p">)</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'3'</span><span class="p">:</span> <span class="mi">300</span><span class="p">}</span>
+<span class="n">Set</span> <span class="n">Ch1</span><span class="o">-</span><span class="n">Ch8</span> <span class="n">overrides</span> <span class="n">to</span> <span class="mi">110</span><span class="o">-</span><span class="mi">810</span> <span class="n">respectively</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'1'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'3'</span><span class="p">:</span> <span class="mi">310</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">:</span> <span class="mi">510</span><span class="p">,</span> <span class="s1">'4'</span><span class="p">:</span> <span class="mi">4100</span><span class="p">,</span> <span class="s1">'7'</span><span class="p">:</span> <span class="mi">710</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span> <span class="mi">610</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">:</span> <span class="mi">810</span><span class="p">}</span>
+ <span class="n">Cancel</span> <span class="n">Ch2</span> <span class="n">override</span> <span class="p">(</span><span class="n">indexing</span> <span class="n">syntax</span><span class="p">)</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'1'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'3'</span><span class="p">:</span> <span class="mi">310</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">:</span> <span class="mi">510</span><span class="p">,</span> <span class="s1">'4'</span><span class="p">:</span> <span class="mi">4100</span><span class="p">,</span> <span class="s1">'7'</span><span class="p">:</span> <span class="mi">710</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span> <span class="mi">610</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">:</span> <span class="mi">810</span><span class="p">}</span>
+<span class="n">Clear</span> <span class="n">Ch3</span> <span class="n">override</span> <span class="p">(</span><span class="k">del</span> <span class="n">syntax</span><span class="p">)</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'1'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">:</span> <span class="mi">510</span><span class="p">,</span> <span class="s1">'4'</span><span class="p">:</span> <span class="mi">4100</span><span class="p">,</span> <span class="s1">'7'</span><span class="p">:</span> <span class="mi">710</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span> <span class="mi">610</span><span class="p">,</span> <span class="s1">'8'</span><span class="p">:</span> <span class="mi">810</span><span class="p">}</span>
+<span class="n">Clear</span> <span class="n">Ch5</span><span class="p">,</span> <span class="n">Ch6</span> <span class="n">override</span> <span class="ow">and</span> <span class="nb">set</span> <span class="n">channel</span> <span class="mi">3</span> <span class="n">to</span> <span class="mi">500</span> <span class="p">(</span><span class="n">dictionary</span> <span class="n">syntax</span><span class="p">)</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{</span><span class="s1">'3'</span><span class="p">:</span> <span class="mi">500</span><span class="p">}</span>
+<span class="n">Clear</span> <span class="nb">all</span> <span class="n">overrides</span>
+ <span class="n">Channel</span> <span class="n">overrides</span><span class="p">:</span> <span class="p">{}</span>
+ <span class="n">Close</span> <span class="n">vehicle</span> <span class="nb">object</span>
+<span class="n">Completed</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">You can run the example against a specific connection (simulated or otherwise) by passing the <a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/guide/connecting_vehicle.html#get-started-connect-string"><span class="std std-ref">connection string</span></a> for your vehicle in the <code class="docutils literal notranslate"><span class="pre">--connect</span></code> parameter.</p>
+<p>For example, to connect to SITL running on UDP port 14550 on your local computer:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python channel_overrides.py --connect <span class="m">127</span>.0.0.1:14550
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="how-does-it-work">
+<h2>How does it work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h2>
+<p>The RC transmitter channels are connected to the autopilot and control the vehicle.</p>
+<p>The values of the first four channels map to the main flight 
+controls: 1=Roll, 2=Pitch, 3=Throttle, 4=Yaw (the mapping is defined in <code class="docutils literal notranslate"><span class="pre">RCMAP_</span></code> parameters in
+<a class="reference external" href="http://plane.ardupilot.com/wiki/arduplane-parameters/#rcmap__parameters">Plane</a>,
+<a class="reference external" href="http://copter.ardupilot.com/wiki/configuration/arducopter-parameters/#rcmap__parameters">Copter</a> ,
+<a class="reference external" href="http://rover.ardupilot.com/wiki/apmrover2-parameters/#rcmap__parameters">Rover</a>).</p>
+<p>The remaining channel values are configurable, and their purpose can be determined using the
+<a class="reference external" href="http://plane.ardupilot.com/wiki/flight-features/channel-output-functions/">RCn_FUNCTION parameters</a>.
+In general a value of 0 set for a specific <code class="docutils literal notranslate"><span class="pre">RCn_FUNCTION</span></code> indicates that the channel can be
+<a class="reference external" href="http://plane.ardupilot.com/wiki/flight-features/channel-output-functions/#disabled">mission controlled</a> (i.e. it will not directly be
+controlled by normal autopilot code).</p>
+<p>You can read the values of the channels using the <a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/automodule.html#dronekit.Vehicle.channels" title="dronekit.Vehicle.channels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Vehicle.channels</span></code></a> attribute. The values are regularly updated,
+from the UAV, based on the RC inputs from the transmitter. These can be read either as a set or individually:</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all channel values from RC transmitter</span>
+<span class="nb">print</span> <span class="s2">"Channel values from RC Tx:"</span><span class="p">,</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span>
+
+<span class="c1"># Access channels individually</span>
+<span class="nb">print</span> <span class="s2">"Read channels individually:"</span>
+<span class="nb">print</span> <span class="s2">" Ch1: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'1'</span><span class="p">]</span>
+<span class="nb">print</span> <span class="s2">" Ch2: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You can override the values sent to the vehicle by the autopilot using <a class="reference internal" href="https://dronekit-python.readthedocs.io/en/latest/automodule.html#dronekit.Channels.overrides" title="dronekit.Channels.overrides"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Vehicle.channels.overrides</span></code></a>.
+The overrides can be written individually using an indexing syntax or as a set using a dictionary syntax.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set Ch2 override to 200 using indexing syntax</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="c1"># Set Ch3, Ch4 override to 300,400 using dictionary syntax"</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'3'</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span> <span class="s1">'4'</span><span class="p">:</span><span class="mi">400</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>To clear all overrides, set the attribute to an empty dictionary.
+To clear an individual override you can set its value to <code class="docutils literal notranslate"><span class="pre">None</span></code> (or call <code class="docutils literal notranslate"><span class="pre">del</span></code> on it):</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clear override by setting channels to None</span>
+<span class="c1"># Clear using index syntax</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Clear using 'del' syntax</span>
+<span class="k">del</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'3'</span><span class="p">]</span>
+
+<span class="c1"># Clear using dictionary syntax (and set override at same time!)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'5'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span><span class="s1">'3'</span><span class="p">:</span><span class="mi">500</span><span class="p">}</span>
+
+<span class="c1"># Clear all overrides by setting an empty dictionary</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<p>Read the channel overrides either as a dictionary or by index.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all channel overrides</span>
+<span class="nb">print</span> <span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span>
+<span class="c1"># Print just one channel override</span>
+<span class="nb">print</span> <span class="s2">" Ch2 override: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You’ll get a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> exception if you read a channel override that has
+not been set.</p>
+</div>
+</div>
+<div class="section" id="source-code">
+<h2>Source code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>The full source code at documentation build-time is listed below (<a class="reference external" href="https://github.com/dronekit/dronekit-python/blob/master/examples/channel_overrides/channel_overrides.py">current version on github</a>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">"""</span>
+<span class="sd">© Copyright 2015-2016, 3D Robotics.</span>
+
+<span class="sd">channel_overrides.py: </span>
+
+<span class="sd">Demonstrates how set and clear channel-override information.</span>
+
+<span class="sd"># NOTE: </span>
+<span class="sd">Channel overrides (a.k.a "RC overrides") are highly discommended (they are primarily implemented </span>
+<span class="sd">for simulating user input and when implementing certain types of joystick control).</span>
+
+<span class="sd">They are provided for development purposes. Please raise an issue explaining why you need them</span>
+<span class="sd">and we will try to find a better alternative: https://github.com/dronekit/dronekit-python/issues</span>
+
+<span class="sd">Full documentation is provided at http://python.dronekit.io/examples/channel_overrides.html</span>
+<span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">dronekit</span> <span class="kn">import</span> <span class="n">connect</span>
+
+
+<span class="c1">#Set up option parsing to get connection string</span>
+<span class="kn">import</span> <span class="nn">argparse</span>  
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Example showing how to set and clear vehicle channel-override information.'</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'--connect'</span><span class="p">,</span> 
+                   <span class="n">help</span><span class="o">=</span><span class="s2">"vehicle connection target string. If not specified, SITL automatically started and used."</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+<span class="n">connection_string</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">connect</span>
+<span class="n">sitl</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+<span class="c1">#Start SITL if no connection string specified</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">connection_string</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">dronekit_sitl</span>
+    <span class="n">sitl</span> <span class="o">=</span> <span class="n">dronekit_sitl</span><span class="o">.</span><span class="n">start_default</span><span class="p">()</span>
+    <span class="n">connection_string</span> <span class="o">=</span> <span class="n">sitl</span><span class="o">.</span><span class="n">connection_string</span><span class="p">()</span>
+
+
+<span class="c1"># Connect to the Vehicle</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'Connecting to vehicle on: </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">connection_string</span><span class="p">)</span>
+<span class="n">vehicle</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">,</span> <span class="n">wait_ready</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Get all original channel values (before override)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"Channel values from RC Tx:"</span><span class="p">,</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+
+<span class="c1"># Access channels individually</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"Read channels individually:"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch1: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'1'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch2: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'2'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch3: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'3'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch4: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'4'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch5: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'5'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch6: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'6'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch7: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'7'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch8: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="s1">'8'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"Number of channels: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+
+
+<span class="c1"># Override channels</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Set Ch2 override to 200 (indexing syntax)"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Ch2 override: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Set Ch3 override to 300 (dictionary syntax)"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'3'</span><span class="p">:</span><span class="mi">300</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Set Ch1-Ch8 overrides to 110-810 respectively"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'1'</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span><span class="s1">'3'</span><span class="p">:</span> <span class="mi">310</span><span class="p">,</span><span class="s1">'4'</span><span class="p">:</span><span class="mi">4100</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">:</span><span class="mi">510</span><span class="p">,</span><span class="s1">'6'</span><span class="p">:</span><span class="mi">610</span><span class="p">,</span><span class="s1">'7'</span><span class="p">:</span><span class="mi">710</span><span class="p">,</span><span class="s1">'8'</span><span class="p">:</span><span class="mi">810</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span> 
+
+
+<span class="c1"># Clear override by setting channels to None</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Cancel Ch2 override (indexing syntax)"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'2'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span> 
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Clear Ch3 override (del syntax)"</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">[</span><span class="s1">'3'</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span> 
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Clear Ch5, Ch6 override and set channel 3 to 500 (dictionary syntax)"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'5'</span><span class="p">:</span><span class="bp">None</span><span class="p">,</span> <span class="s1">'6'</span><span class="p">:</span><span class="bp">None</span><span class="p">,</span><span class="s1">'3'</span><span class="p">:</span><span class="mi">500</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span> 
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Clear all overrides"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">" Channel overrides: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">overrides</span><span class="p">)</span> 
+
+<span class="c1">#Close vehicle object before exiting script</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Close vehicle object"</span><span class="p">)</span>
+<span class="n">vehicle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Shut down simulator if it was started.</span>
+<span class="k">if</span> <span class="n">sitl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">sitl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">"Completed"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+					<footer id="footer">
+						
+	<div class="footer-buttons" role="navigation" aria-label="footer navigation">
+		
+			<a href="https://dronekit-python.readthedocs.io/en/latest/contributing/index.html" class="btn btn-default pull-right" title="Contributing">
+				Next <span class="fa fa-arrow-circle-right"></span>
+			</a>
+		
+		
+			<a href="https://dronekit-python.readthedocs.io/en/latest/examples/flight_replay.html" class="btn btn-default" title="Example: Flight Replay">
+				<span class="fa fa-arrow-circle-left"></span> Previous
+			</a>
+		
+	</div>
+
+
+<hr>
+
+<div role="contentinfo">
+	<p>
+				© Copyright 2015-2016, 3D Robotics.
+	</p>
+</div>
+Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/3drobotics/sphinx_3dr_theme">theme</a> provided by <a href="https://3drobotics.com/">3D Robotics</a> for <a href="http://dronekit.io/">DroneKit</a>.
+					</footer>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/jquery.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/scroll.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/underscore.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/doctools.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/bootstrap.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/cool-select.js"></script>
+		<script type="text/javascript" src="Example%20Channels%20and%20Channel%20Overrides_files/searchtools.js"></script>
+	
+	<script type="text/javascript">
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-39974306-3', 'auto');
+		ga('send', 'pageview');
+	</script>
+
+</body></html>

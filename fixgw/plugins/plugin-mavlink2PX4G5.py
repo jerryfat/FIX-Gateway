@@ -133,26 +133,27 @@ class MainThread(threading.Thread):
         if(self.pyMAVPX4connect == "172.17.0.1:14550") or (self.pyMAVPX4connect == "udp://:14540") or \
           (self.pyMAVPX4connect == "udp:127.0.0.1:14445") or(self.pyMAVPX4connect == "udp:172.17.0.1:14540") or \
           (self.pyMAVPX4connect == "udp://:14445"): # launch sitl if connection string matches "172.17.0.1:14550"
-            print("$$$-starting PX4 SIM subprocess sitl..  $ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
+            print("$$$-starting PX4 SIM subprocess sitl..  $ sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0") #" #"sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
             #command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
+            #command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2'  
             command = 'sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0'
             subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             time.sleep(5) # let sitl startup before connecting
         #
         #command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
-        command = 'python3 ./mavlinkMAVSDKdronekitCombined.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
+        command = 'python ./mavlinkMAVSDKdronekitCombined.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
         # /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py
         print("$$$-starting command /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #  gnome-terminal --geometry=120x20+500+500     --geometry 40x80+100+100 didnt work right
 
         print("$$$-starting subprocess pyEfis ../pyEfis/pyEfis.py")
-        command = 'python3 ../pyEfis/pyEfis.py' 
+        command = 'python ../pyEfis/pyEfis.py' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
         #python3 /home/jf/pyg5/Scripts/pyG5DualStacked 
         print("$$$-starting subprocess pyG5 ../pyG5/pyG5/pyG5Main.py -m hsi")
-        command = 'python3 ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
+        command = 'python ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
         
