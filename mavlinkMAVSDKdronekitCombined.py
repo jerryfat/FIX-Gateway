@@ -3,10 +3,9 @@ from platform import python_version
 print("using Python ver:",python_version())
 #
 # for mavsdk
-import asyncio
+#import asyncio
 #from mavsdk import start_mavlink
-from mavsdk import System
-#from mavsdk import connect
+#from mavsdk import System
 
 # for dronekit
 # Import DroneKit-Python
@@ -22,6 +21,38 @@ import _collections_abc
 from math import *
 
 from datetime import datetime, timedelta
+
+import time, sys, argparse
+import socket
+import pickle
+import subprocess 
+import json
+import re
+
+#
+from reprint import output
+#
+################################################################################################
+# Settings
+################################################################################################
+
+Px4simAddrPort="" # connection string incoming mavlink msgs from px4 ardupilot oreal or sitl
+pyG5SimAddrPort=""
+pyG5SimAddr = ""
+pyG5SimPort = 0
+pyefisSimAddrPort=""
+pyefisSimAddr = ""
+pyefisSimPort = 0
+
+useMAVSDK = False
+useDronekit = False
+# timestamp date_time
+now = datetime.now()
+date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+
+MAV_MODE_AUTO   = 4
+data_dict = {}
+
 # timestamp date_time
 # fixgw $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
 # sitl #$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
@@ -46,33 +77,6 @@ from datetime import datetime, timedelta
 #python3 ./mavlinkMAVSDKdronekitCombined.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
 #to start sitl px4 gazebo sim locally via docker app:  
 
-import time, sys, argparse
-import socket
-import pickle
-import subprocess 
-import json
-import re
-
-################################################################################################
-# Settings
-################################################################################################
-
-Px4simAddrPort="" # connection string incoming mavlink msgs from px4 ardupilot oreal or sitl
-pyG5SimAddrPort=""
-pyG5SimAddr = ""
-pyG5SimPort = 0
-pyefisSimAddrPort=""
-pyefisSimAddr = ""
-pyefisSimPort = 0
-
-useMAVSDK = False
-useDronekit = False
-# timestamp date_time
-now = datetime.now()
-date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-
-MAV_MODE_AUTO   = 4
-data_dict = {}
 # https://github.com/PX4/Firmware/blob/master/Tools/mavlink_px4.py
 # https://firmware.ardupilot.org/Plane/latest/Pixhawk1-1M/  ARDUPLANE #4.5.0-FIRMWARE_VERSION_TYPE_DEV
 # https://github.com/ArduPilot/pymavlink/blob/master/mavextra.py
@@ -80,8 +84,19 @@ data_dict = {}
 # $ python telemetry.py -m "serial:///dev/ttyUSB0:57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 # $ python3 FIX-Gateway/mavlink2PX4G5.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
 # $ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
-################################################################################################
 #$ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+#$ python telemetry.py -m ":14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+#$ python telemetry.py -m "udp://:14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
+#python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
+#python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
+#python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
+#python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
+#to starrt sitl px4 gazebo sim locally via docker app:  
+#$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
+
+################################################################################################
+################################################################################################
+################################################################################################
 # Parse connection argument
 parser = argparse.ArgumentParser()
 #parser.add_argument("-c", "--connect", help="connection string")
@@ -120,15 +135,9 @@ if args.pyefis:
 
 
 print("parsed args: Px4simAddrPort-", Px4simAddrPort, "  pyG5SimAddrPort-",pyG5SimAddrPort,"  pyefisSimAddrPort-",pyefisSimAddrPort)
-#$ python telemetry.py -m ":14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
-#$ python telemetry.py -m "udp://:14445" -g 127.0.0.1:65432 -e 127.0.0.1:2100
-#python3 ./mavlink2pyg5.py -m /dev/ttyUSB0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100 pixhawk usb  
-#python3 ./mavlink2pyg5.py -m /dev/ttyACM0,57600 -g 127.0.0.1:65432 -e 127.0.0.1:2100  sik radio  
-#python3 ./mavlink2pyg5.py -m 172.17.0.1:14550 -g 127.0.0.1:65432 -e 127.0.0.1:2100 sitl  
-#python3 ./mavlink2PX4G5.py -m 127.0.0.1:14445 -g 127.0.0.1:65432 -e 127.0.0.1:2100 qgcs forwarded  
-#to starrt sitl px4 gazebo sim locally via docker app:  
-#$ sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2  
-################################################################################################
+#### END ARG PARSER ################################################################################################
+
+
 
 def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
     global data_dict
@@ -155,13 +164,11 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
                     serialized_data = pickle.dumps(data_dict)   
-                    conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
-                    #msg.get_payload() ) #create byte wise stream from string text   
-                    print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), len(data_dict) ",len(serialized_data),len(data_dict))  #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort, tmp8)
-                    #print("-%%%%- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
+                    conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  
+                    print("--DRONEKIT-- SEND data_dict to PyG5 len(serialized_data), \
+                        len(data_dict) ",len(serialized_data),len(data_dict))  
                 except:
                     print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSimDronekit()  ERROR Sending pickle serialized data... ") 
-                   #print("pyG5SimAddrPort-",pyG5SimAddrPort)
         conn.close
     #
     # send data to pyEfis
@@ -171,39 +178,18 @@ def SendAttitudeDataToG5simEfisSimDronekit(msg): # format and load as dict and t
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                 try:       
                     serialized_data = pickle.dumps(data_dict)   
-                    conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
-                    #msg.get_payload() ) #create byte wise stream from string text   
-                    print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), len(data_dict) " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort", tmp11)
-                    #print("-$$$$- Sending pickled data_dict ... len(serialized_data), data_dict len= ",len(serialized_data), data_dict)                
+                    conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))   
+                    print("--DRONEKIT-- SEND data_dict to pyEfis len(serialized_data), \
+                    #      len(data_dict) " ,len(serialized_data),len(data_dict))       
                 except:
                     print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
-                    #print("pyefisSimAddr-",pyefisSimAddr)
         conn.close
     return
 
 def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and then pickle and send to pyG5 or pyEfis
         global data_dict
-        #now = datetime.now()
-        #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        #print("--MAVSDK--Rxd:", len(str(msg)), end="\r") #print("--MAVSDK--Recvd:", end="\r") , str(msg).split(":")[0] , len(str(msg))
-        #print("--MAVSDK--Recvd msg",  msg )
         tmp = str(msg).split(" ") #print("tmp[1:]=", tmp[1:])
         text = re.sub('(\w+)\s?:\s?("?[^",]+"?,?)', "\"\g<1>\":\g<2>", str(tmp[1:])) #print("text ",text)
-        #print("testmsg:",text)
-        '''
-        tmp2= str(tmp[1:]).replace("'{","'") #print("tmp2=", tmp2)
-        tmp3= tmp2.replace("}'","'") #print("tmp3=", tmp3)
-        tmp4= tmp3.replace(", ':'," , ":") #print("tmp4=", tmp4)
-        tmp5= tmp4.replace(",'" , "'") #print("tmp5=", tmp5)
-        tmp6= tmp5.replace("[" , "{") #open close for data dictionary input #print("tmp6=", tmp6)
-        tmp7= tmp6.replace("]" , "}") #print("tmp7=", tmp7)
-        tmp8= tmp7.replace("\'" , "\"") #print("tmp8=", tmp8) # worked with pyG5 up to here
-        # end of pyG5 text mangling
-        tmp9= tmp8.replace(": \"" , ": ") #  ' to " keys for pyefis #print("tmp9=", tmp9)
-        tmp10= tmp9.replace("\"," , ",") #  ", to , keys for pyefis #print("tmp10=", tmp10)
-        tmp11= tmp10.replace("\"}" , "}") # end quote and curly bracket -> bracket for pyefis #print("tmp11=", tmp11)
-        '''
-        #mesgStr = str(msg)
         tmp1= str(text).replace("[\'[" , "{") 
         tmp2= tmp1.replace("]\']" , "}")
         #print("tmp2:", tmp2)
@@ -223,11 +209,9 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                     try:       
                         serialized_data = pickle.dumps(data_dict)   
-                        conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
-                        #msg.get_payload() ) #create byte wise stream from string text   
-                        print("--%%%%-- Sending pickled data_dict to PyG5 len(serialized_data), len(data_dict) ",len(serialized_data),len(data_dict)) #," ,pyG5SimAddrPort-",pyG5SimAddrPort,"=pyG5SimAddr, ",pyG5SimAddr,"=pyG5SimPort:",pyG5SimPort)
-                        #print("-%%%%-len(pyG5)",len(serialized_data), end="")        
-                        #print("-%%%%-len(pyG5)",len(serialized_data), end=" ")         
+                        conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr 
+                        print("--MAVSDK-- SEND data_dict to PyG5 len(serialized_data), \
+                        #      len(data_dict) ",len(serialized_data),len(data_dict))    
                     except:
                         print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSimMAVSDK()  ERROR Sending pickle serialized data... ") 
                         #print("pyG5SimAddrPort-",pyG5SimAddrPort)
@@ -240,17 +224,17 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as conn:
                     try:       
                         serialized_data = pickle.dumps(data_dict)   
-                        conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr
-                        #msg.get_payload() ) #create byte wise stream from string text   
-                        print("--$$$$-- Sending pickled data_dict to pyEfis len(serialized_data), len(data_dict) " ,len(serialized_data),len(data_dict)) #, pyefisSimAddr, "=pyefisSimAddr, ",  pyefisSimPort,"=pyefisSimPort")
-                        #print("-$$$$-len(pyEfis)",len(serialized_data), end=" ")                
+                        conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr  
+                        print("--MAVSDK-- SEND data_dict to pyEfis len(serialized_data), \
+                              len(data_dict) " ,len(serialized_data),len(data_dict)) 
                     except:
                         print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
                         #print("pyefisSimAddr-",pyefisSimAddr)
             conn.close
-        #print(date_time,"    ", end="\r")
         return
-
+################################################################################################
+################################################################################################
+################################################################################################
 #useMAVSDK = False
 if (useDronekit == True):
     ################################################################################################
@@ -313,47 +297,246 @@ if (useDronekit == True):
     vehicle.close()
     time.sleep(1) 
 
-    app.exec()
-# loop here until quit or forever else run asyn version below
+    app.exec() # loop here until quit() or forever else run asyn version below instead if (useDronekit == False):
+#the input connect string uses MAVSDK if 
+################################################################################################
+################################################################################################
+################################################################################################
+
 ###############################################################################################################################
 ###############################################################################################################################
+# using MAVSDK libs packages to connect to PX4 and send data dict to pyG and pyEfis , also 
+# if usb controller lie Great planes I-controller then can be used as manual input
+# manual input commands use joystick axis
 ###############################################################################################################################
-async def run():
-    #start_mavlink()
-    # Init the drone
+# https://docs.qgroundcontrol.com/Stable_V4.3/en/qgc-user-guide/setup_view/joystick.html
+"""
+how to use the manual controls with joysticks plugin:
+
+Note: Manual inputs are taken from a test set in this example to decrease
+complexity. Manual inputs can be received from devices such as a joystick
+using third-party python extensions.
+
+Note: Taking off the drone is not necessary before enabling manual inputs.
+It is acceptable to send positive throttle input to leave the ground.
+Takeoff is used in this example to decrease complexity
+"""
+# if ("://" in Px4simAddrPort) string : # then set useMAVSDK = True
+#if useMAVSDK: print("useMAVSDK = True")
+#
+import asyncio
+import random
+from mavsdk import System
+import time
+import pygame # joystick RC i-controller great planes
+
+# timestamp date_time
+from datetime import datetime, timedelta
+### INIT global vars etc
+pygame.display.init() #? required
+pygame.joystick.init()
+
+#Axis = []
+joysticks={}
+PrevJoystickVals = {} # store prev vals
+done = False 
+roll=0.0; pitch=0.0; throttle=0.0; yaw=0.0
+
+async def run(): #run manual_controls()
+    """Main function to connect to the drone and input manual controls"""
+    
+    # Connect to the Simulation
     drone = System()
-    print("MAVSDK: libs Connecting... to autopilot/sitl")
-    # px4 sitl sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2
-    await drone.connect(Px4simAddrPort) #connection_string) # "udp://:14540") # yup 
-    # nope await drone.connect(system_address="udp:172.17.0.1:14540") #"udp://:14540")
-    print("connected !")
-    #await drone.action.arm()
-    #print("arm...")
-    #await drone.action.takeoff()
-    #print("takeoff...")
+    #
+    print("MAVSDK Waiting for drone to connect...")
+    await drone.connect(system_address="udp://:14540")
+    #print("Waiting for drone to connect...")
+    async for state in drone.core.connection_state():
+        if state.is_connected:
+            print(f"drone().is_connected = true!")
+            break
+    # This waits till a mavlink based drone is connected
+    async for state in drone.core.connection_state():
+        if state.is_connected:
+            print(f"-- Connected to drone!")
+            break
+
+    # Checking if Global Position Estimate is ok
+    async for health in drone.telemetry.health():
+        if health.is_global_position_ok and health.is_home_position_ok:
+            print("-- Global position state is good enough for flying.")
+            break
+
     info = await drone.info.get_version() # firmware version
     print("firmware version", info)
-    #attitudeEuler = await drone.telemetry.attitude_euler()   
-    #print("attitudeEuler:",attitudeEuler)
     #
-    #async for position in drone.telemetry.position():
-        #print("position:",position)
-        #heading == async drone.telemetry.heading()  
-        #print("heading:",heading)
-        #attitudeEuler = drone.telemetry.attitude_euler()   
-        #print("attitudeEuler:",attitudeEuler)
+    '''//Iterate through and detect systems connected
+    for (auto system : mavsdk.systems()) {
+        std::cout << "Found system with MAVLink system ID: " << static_cast<int>(system->get_system_id())
+              << ", connected: " << (system->is_connected() ? "yes" : "no")
+              << ", has autopilot: " << (system->has_autopilot() ? "yes" : "no") << '\n';
+    }'''
+    # https://docs.px4.io/main/en/advanced_config/parameter_reference.html
+    '''
+    # to test manual control arm takeoff wait for hold go to manual input
+    # Arming the drone
+    print("-- Arming")
+    await drone.action.arm()
 
-    # Start the tasks
-    #asyncio.ensure_future(print_battery(drone))
-    #asyncio.ensure_future(print_gps_info(drone))
-    #asyncio.ensure_future(print_in_air(drone))
-    # mavlink messages
+    # Takeoff the vehicle
+    print("-- Taking off")
+    await drone.action.takeoff()
+    time.sleep(15) # wait to get to position hold
+    '''
+    #print("-- Starting manual control")
+    #await drone.manual_control.set_manual_control_input(float(0), float(0), float(0.5), float(0)) #needs this ?
+    
+    #print("-- Starting altitude hold control")
+    #await drone.manual_control.start_altitude_control()
+    #
+    # send mavlink messages from usb josticks
+    asyncio.ensure_future(joystick_event(drone))
     asyncio.ensure_future(print_position(drone))
     asyncio.ensure_future(print_attitude_euler(drone))
     asyncio.ensure_future(print_heading(drone))
-
     while True:
         await asyncio.sleep(1)
+
+async def joystick_event(drone):
+    global roll, pitch, throttle, yaw, PrevJoystickVals
+    print("--MAVSDK--async joystick_event()")
+    while(True):
+        #if(True):  #joystick_count > 0 ):
+        # Get count of joysticks.
+        joystick_count = pygame.joystick.get_count()
+        JoyAxes = joystick_count   #pygame.joystick.Joystick(0).get_numaxes()
+        print(f"Number of joysticks: {joystick_count}")
+        done = False
+        dec = 3 # round to decimal
+        while not done: # main loop
+            print("running manual control joystick loop ...") 
+            await asyncio.sleep(0.1) # ten times a sec this code is executed
+            # Event processing step.# Possible joystick events: JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN,
+            # JOYBUTTONUP, JOYHATMOTION, JOYDEVICEADDED, JOYDEVICEREMOVED
+            # and for each joystick create a dict entry using guid as key and object addr and guid and name etc as values as a list
+            # check if current vals different tahn prev vals            
+
+            for i, j in PrevJoystickVals.items():
+                if (True): 
+                    now = datetime.now()
+                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
+                    await drone.manual_control.set_manual_control_input( float(j[5]), float(j[6]), float(j[7]), float(j[9]) )
+                    #only if changged below
+                    if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(joysticks[i][5]), dec)) or \
+                    (round(float(PrevJoystickVals[i][6]), dec) != round(float(joysticks[i][6]), dec)) or \
+                    (round(float(PrevJoystickVals[i][7]), dec) != round(float(joysticks[i][7]), dec)) or \
+                    (round(float(PrevJoystickVals[i][8]), dec) != round(float(joysticks[i][8]), dec)) or \
+                    (round(float(PrevJoystickVals[i][9]), dec) != round(float(joysticks[i][9]), dec)) or \
+                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ): 
+                        now = datetime.now()
+                        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                        print(f"--MAVSDK-- SEND MAN CTL async JOYSTICK data CHANGED: date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
+ 
+            # check if current vals different tahn prev vals
+            PrevJoystickVals.clear() # clears prev vals in prev vals dict
+            for i, j in joysticks.items():
+                #print ("joystick:",str(i)," vals:",j)
+                PrevJoystickVals[i] =  j # add current vals into old vals before rewrting new vals from joystick
+            #
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True  # Flag that we are done so we exit this loop.
+
+                if event.type == pygame.JOYBUTTONDOWN:
+                    print("Joystick button pressed.")
+                    #if event.button == 0:
+                        #joystick = joysticks[event.device_index] #instance_id]
+                        #if joystick.rumble(0, 0.7, 500):
+                            #print(f"Rumble effect played on joystick {event.instance_id}")
+
+                if event.type == pygame.JOYBUTTONUP:
+                    print("Joystick button released.")
+
+                # Handle hotplugging (adding removing in real time usb joysticks
+                if event.type == pygame.JOYDEVICEADDED:
+                    # This event will be generated when the program starts for every
+                    # joystick, filling up the list without needing to create them manually.
+                    joy = pygame.joystick.Joystick(event.device_index)
+                    joysticks.update({joy.get_guid():[joy]}) # add object addr val to key=guid dict joysticks
+                    print ("ADDING NEW joystick key:",joy.get_guid(),"  val:",[joy])
+                    for i, j in joysticks.items():
+                        print ("ADDED NEW joystick dict:",str(i)," vals:",j)
+                    print(f"ADDED Joystick {joy.get_instance_id()} is now connected {joysticks.keys()} ; {joysticks.values()} ; {joysticks.items()}" )
+                    joystick_count = pygame.joystick.get_count()
+
+                if event.type == pygame.JOYDEVICEREMOVED:
+                    for k, v in joysticks.items(): #for joystick in joysticks:  #.values():   #for joystick in joysticks:
+                        jid = v[1] #.get_instance_id()
+                        guid = k # keys are guid from pygame joy.get_guid()
+                        print ("DISCONNECTING guid:",guid,"  jid:",jid)
+                        if (event.instance_id == jid): 
+                            print ("DEL joysticks[guid] dict guid, inst id jid:",guid, jid)
+                            print(f"DISCONNECT Joystick {event.instance_id} is now disconnected")
+                            del joysticks[k] #event.instance_id] # joy.get_guid()
+                            PrevJoystickVals = {} 
+                            break # short circuit
+            #
+            for joystick in joysticks.values():
+                jid = joystick[0].get_instance_id()
+                guid = joystick[0].get_guid() # from PYTHON OBJECT addr get guid from above when added new joystick event
+                joysticks.update( { guid : [ joystick[0] ] } ) # restart remove vals for key and replace with guid
+                joysticks[guid].append(jid)
+                # Get the name from the OS for the controller/joystick.
+                name = joystick[0].get_name() #print(f"Joystick name: {name}")
+                joysticks[guid].append(name) #print("add name joysticks[jid]:",joysticks[jid])
+
+                #guid = joystick[0].get_guid()
+                #print(f"GUID: {guid}")
+                #joysticks[guid].append(guid)
+                #print("add GUID joysticks[jid]:",joysticks[jid])
+
+                power_level = joystick[0].get_power_level()  #print(f"Joystick's power level: {power_level}")
+                joysticks[guid].append(power_level)  #print("add power_level joysticks[jid]:",joysticks[jid])
+
+                # Usually axis run in pairs, up/down for one, and left/right for
+                # the other. Triggers count as axes.
+                axes = joystick[0].get_numaxes()
+                #print(f"Number of axes: {axes}")
+                joysticks[guid].append(axes)
+                #print("add axes joysticks[jid]:",joysticks[jid])
+
+                for i in range(axes):
+                    axis = joystick[0].get_axis(i)
+                    #print(f"Axis {i} value: {axis:>6.3f}")
+                    joysticks[guid].append(round(axis,5))
+                    #print(f"add axis {i} {joysticks[jid]}")
+
+                buttons = joystick[0].get_numbuttons()
+                #print(f"Number of buttons: {buttons}")
+                joysticks[guid].append(buttons)
+                #print(f"add buttons {buttons} {joysticks[jid]}")
+
+                for i in range(buttons):
+                    button = joystick[0].get_button(i)
+                    #print(f"Button {i:>2} value: {button}")
+                    joysticks[guid].append(button)
+                    #print(f"add button {i} {joysticks[jid]}")
+
+                hats = joystick[0].get_numhats()
+                #print(f"Number of hats: {hats}")
+                joysticks[guid].append(hats)
+                #print(f"add hats {hats} {joysticks[jid]}")
+
+                # Hat position. All or nothing for direction, not a float like
+                # get_axis(). Position is a tuple of int values (x, y).
+                for i in range(hats):
+                    hat = joystick[0].get_hat(i)
+                    #print(f"hat: {hat}")
+                    joysticks[guid].append(hat) # comes back as a list, not an int value
+                    #print(f"Hat {i} value: {str(hat)}")
+                    #print(f"add hat {i} {joysticks[jid]}")
+        ## END JOYSTICK EVENT ####
 
 async def print_position(drone):
     async for position in drone.telemetry.position():
@@ -361,7 +544,7 @@ async def print_position(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK position msg converting") #, sending to G5 and or Efis(): ", date_time," ", position)
-        print("--MAVSDK--Recvd position msg",  position )
+        print("--MAVSDK-- RECVd position msg",  position )
         SendAttitudeDataToG5simEfisSimMAVSDK(position)
 
 async def print_heading(drone):
@@ -370,7 +553,7 @@ async def print_heading(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@-Received from ",Px4simAddrPort," MAVSDK heading converting") #, sending to G5 and or Efis(): ", date_time," ", heading)
-        print("--MAVSDK--Recvd heading msg",  heading )
+        print("--MAVSDK-- RECVd heading msg",  heading )
         SendAttitudeDataToG5simEfisSimMAVSDK(heading)
 
 async def print_attitude_euler(drone):
@@ -379,17 +562,17 @@ async def print_attitude_euler(drone):
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK attitude_euler converting") #", sending to G5 and or Efis(): ", date_time," ", attitude_euler)
-        print("--MAVSDK--Recvd attitude_euler msg",  attitude_euler )
+        print("--MAVSDK-- RECVd attitude_euler msg",  attitude_euler )
         SendAttitudeDataToG5simEfisSimMAVSDK(attitude_euler)
 
 async def print_battery(drone):
     async for battery in drone.telemetry.battery():
-        print(f"--MAVSDK--Recvd Battery{battery} %:{battery.remaining_percent}")
+        print(f"--MAVSDK-- RECVd Battery{battery} %:{battery.remaining_percent}")
 
 
 async def print_gps_info(drone):
     async for gps_info in drone.telemetry.gps_info():
-        print(f"--MAVSDK--Recvd GPS_info: {gps_info}")
+        print(f"--MAVSDK-- RECVd GPS_info msg:{gps_info}")
 
 
 async def print_in_air(drone):
