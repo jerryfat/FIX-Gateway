@@ -200,7 +200,7 @@ class MainThread(threading.Thread):
                     #print(f"Connected to {self.addr}")
                     self.data_pickled = self.conn.recv(1024)
                     self.data_dict = pickle.loads(self.data_pickled)   
-                    #print("FIXGW(run) received mavlink_data_dict:  ",self.data_dict)
+                    print("FIXGW plugin(run) plugin-mavlink2PX4G5.py received mavlink_data_dict:  ",self.data_dict)
                     #print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled)) #, self.data_dict)
                     # copy key, value pairs into data dict for efis                   
                     #try: self.parent.db_write("ALT", self.data_dict["alt"]/1000)
@@ -208,10 +208,13 @@ class MainThread(threading.Thread):
                     
                     # internal KEY = Data pack values form pickle data into internal dict for pyefis 
                     # for MAVSDK recv msgs
+                    #
                     try: 
-                        self.parent.db_write("ALT",    self.data_dict["absolute_altitude_m"]*100)
-                        #print("\nALT mavsdk")
-                    except: pass
+                        self.parent.db_write("ALT",    self.data_dict["relative_altitude_m"]*3.28084) # convert to feet from meters #*100)   # "absolute_altitude_m"]*100)
+                        #print("\nALT mavsdk", self.data_dict["relative_altitude_m"]) 
+                    except: 
+                        #print("error writing key val ALT mavsdk", self.data_dict["relative_altitude_m"]) 
+                        pass
                     try: 
                         self.parent.db_write("PITCH", self.data_dict["pitch_deg"]) 
                         #print("\nPITCH mavsdk")
