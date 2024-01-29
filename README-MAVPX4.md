@@ -62,7 +62,20 @@ $ git clone https://github.com/jerryfat/pyG5.git
 $ cd FIX-Gateway/fixgw
 $ fixgw.py script starts up FIXGW server and pyEfis and pyG5 and converter script and sitl and connects to sitl,qgcs,px4,ardupilot
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"
+to starrt px4 sitl:
+sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0
+sudo apt install docker
+
 install many python dependencies below dronekit or MAVSDK which doesnt require changing system files in python 3.10 like dronekit
+dronekit pip install dronekit
+reprint  pip install reprint
+mavsdk   pip install mavsdk
+pygame   pip install // joystick usb support
+PyQt5    pip install PyQt5
+pip install pyavtools
+pip install geomag
+pip install PySide6
+pip install pyg5
 
 ## to run app demo from FIXGW plugin called plugin-mavlink2PX4G5
 ( FIX-Gateway/fixgw/plugins/plugin-mavlink2PX4G5.py )
@@ -70,6 +83,8 @@ install many python dependencies below dronekit or MAVSDK which doesnt require c
 $ cd FIX-Gateway  
 $ python3 ./fixgw.py -v -d -config-file "fixgw/configs/default.yaml"  
 the FIX-Gateway/fixgw/config/default.yaml 'config' file plugin automagically (via xterms) starts up FIX server, pyEfis, pyG5 and 1. sitl if ip addr is 172.17.0.1 or 2. :14550 if qgcs or 3. connects to mavlink source over /dev/serial acmo 4. or usb0  
+
+
 
  note: from the FIXGW default.yaml config file, the added plugin-mavlink2PX4G5 has config parameters for pyG5 and pyEfis conversion data for mavlink msgs
 from FIX-Gateway/fixgw/config/default.yaml

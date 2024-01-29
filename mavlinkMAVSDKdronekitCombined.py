@@ -7,16 +7,7 @@ print("using Python ver:",python_version())
 #from mavsdk import start_mavlink
 #from mavsdk import System
 
-# for dronekit
-# Import DroneKit-Python
-from dronekit import connect, Command, LocationGlobal # from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
-from pymavlink import mavutil
 
-'''# changes made to /usr/lib/python3.10/collections/__init__.py
-from _collections_abc import MutableMapping 
-import _collections_abc 
-
-#import _collections_abc # orig'''
 
 from math import *
 
@@ -237,6 +228,16 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
 ################################################################################################
 #useMAVSDK = False
 if (useDronekit == True):
+    # for dronekit
+    # Import DroneKit-Python
+    from dronekit import connect, Command, LocationGlobal # from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
+    from pymavlink import mavutil
+
+    '''# changes made to /usr/lib/python3.10/collections/__init__.py
+    from _collections_abc import MutableMapping 
+    import _collections_abc 
+
+    #import _collections_abc # orig'''
     ################################################################################################
     # connect to MAVSDK libs version
     ################################################################################################
@@ -404,7 +405,7 @@ async def run(): #run manual_controls()
 
 async def joystick_event(drone):
     global roll, pitch, throttle, yaw, PrevJoystickVals
-    print("--MAVSDK--async joystick_event()")
+    print("--MAVSDK--async joystick_event()@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     while(True):
         #if(True):  #joystick_count > 0 ):
         # Get count of joysticks.
@@ -425,18 +426,23 @@ async def joystick_event(drone):
                 if (True): 
                     now = datetime.now()
                     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
-                    await drone.manual_control.set_manual_control_input( float(j[5]), float(j[6]), float(j[7]), float(j[9]) )
+                    #print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]},  yaw:{joysticks[i][9]}" )
+                    await drone.manual_control.set_manual_control_input( float(joysticks[i][5]), float(joysticks[i][6]), float(joysticks[i][7]), float(joysticks[i][9]) )
                     #only if changged below
                     if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(joysticks[i][5]), dec)) or \
                     (round(float(PrevJoystickVals[i][6]), dec) != round(float(joysticks[i][6]), dec)) or \
                     (round(float(PrevJoystickVals[i][7]), dec) != round(float(joysticks[i][7]), dec)) or \
                     (round(float(PrevJoystickVals[i][8]), dec) != round(float(joysticks[i][8]), dec)) or \
                     (round(float(PrevJoystickVals[i][9]), dec) != round(float(joysticks[i][9]), dec)) or \
-                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ): 
-                        now = datetime.now()
-                        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                        print(f"--MAVSDK-- SEND MAN CTL async JOYSTICK data CHANGED: date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
+                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ) or \
+                    ( PrevJoystickVals[i][12] != joysticks[i][12] ) or \
+                    ( PrevJoystickVals[i][13] != joysticks[i][13] ) or \
+                    ( PrevJoystickVals[i][14] != joysticks[i][14] ) or \
+                    ( PrevJoystickVals[i][15] != joysticks[i][15] ) or \
+                    ( PrevJoystickVals[i][16] != joysticks[i][16] ) :
+                        #now = datetime.now()
+                        #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                        print(f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]}, yaw:{joysticks[i][9]}, #sw:{joysticks[i][11]}, sw1:{joysticks[i][12]}, sw2:{joysticks[i][13]}, sw3:{joysticks[i][14]}, sw4:{joysticks[i][15]}, sw5:{joysticks[i][16]}" )
  
             # check if current vals different tahn prev vals
             PrevJoystickVals.clear() # clears prev vals in prev vals dict
