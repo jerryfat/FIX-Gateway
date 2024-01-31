@@ -201,7 +201,7 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                     try:       
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyG5SimAddr, pyG5SimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr 
-                        print("--MAVSDK-- SEND data_dict to PyG5 len(serialized_data), \
+                        #print("--MAVSDK-- SEND data_dict to PyG5 len(serialized_data), \
                         #      len(data_dict) ",len(serialized_data),len(data_dict))    
                     except:
                         print("-EEEE-ERROR-: SendAttitudeDataToG5simEfisSimMAVSDK()  ERROR Sending pickle serialized data... ") 
@@ -216,8 +216,8 @@ def SendAttitudeDataToG5simEfisSimMAVSDK(msg): # format and load as dict and the
                     try:       
                         serialized_data = pickle.dumps(data_dict)   
                         conn.sendto(serialized_data, (pyefisSimAddr, pyefisSimPort))  #(pyG5SimAddr, pyG5SimPort))  # pyG5SimAddr  
-                        print("--MAVSDK-- SEND data_dict to pyEfis len(serialized_data), \
-                              len(data_dict) " ,len(serialized_data),len(data_dict)) 
+                        #print("--MAVSDK-- SEND data_dict to pyEfis len(serialized_data), \
+                        #      len(data_dict) " ,len(serialized_data),len(data_dict)) 
                     except:
                         print("-EEEE -ERROR-: SendAttitudeDataToG5simEfisSim  ERROR Sending pickle serialized data... ") 
                         #print("pyefisSimAddr-",pyefisSimAddr)
@@ -299,11 +299,13 @@ if (useDronekit == True):
     time.sleep(1) 
 
     app.exec() # loop here until quit() or forever else run asyn version below instead if (useDronekit == False):
-#the input connect string uses MAVSDK if 
-################################################################################################
-################################################################################################
-################################################################################################
+#the input connect string uses MAVSDK if //: in connect string
+#
 
+################################################################################################
+################################################################################################
+################################################################################################
+# if (useDronekit == False):
 ###############################################################################################################################
 ###############################################################################################################################
 # using MAVSDK libs packages to connect to PX4 and send data dict to pyG and pyEfis , also 
@@ -312,7 +314,7 @@ if (useDronekit == True):
 ###############################################################################################################################
 # https://docs.qgroundcontrol.com/Stable_V4.3/en/qgc-user-guide/setup_view/joystick.html
 """
-how to use the manual controls with joysticks plugin:
+how to use the manual controls with Joysticks plugin:
 
 Note: Manual inputs are taken from a test set in this example to decrease
 complexity. Manual inputs can be received from devices such as a joystick
@@ -338,11 +340,38 @@ pygame.display.init() #? required
 pygame.joystick.init()
 
 #Axis = []
-joysticks={}
+Joysticks={}
 PrevJoystickVals = {} # store prev vals
 done = False 
 roll=0.0; pitch=0.0; throttle=0.0; yaw=0.0
+# globsl print vars
+RxMAVmsg     = ""
+RxMAVlen     = 0
+RxMAVpkts    = 0
+TxG5pkts     = 0
+TxG5len      = 0
+TxEfispkts   = 0
+TxEfislen    = 0
+RxJoyData    = ""
+RxJoyUSBPkts = 0
+TxJoyMAVPkts = 0
+RxJoysticks  = {} # rx dict can be multiple Joysticks by guid, we dont care yet here
+#
+# print multiple lines
+def PRINT():
+    # timestamp date_time
+    now = datetime.now()
+    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+    print(
+        f'{date_time} MAVSDK RxMAVpkts={RxMAVpkts} RxMAVlen={RxMAVlen}',
+        f'TxG5pkts={TxG5pkts} TxG5len={TxG5len}',
+        f'TxEfispkts={TxEfispkts} TxEfislen={TxEfislen}',
+        f'RxJoyUSBPkts={RxJoyUSBPkts} TxJoyMAVPkts={TxJoyMAVPkts} RxJoyData:{RxJoyData}',
+        flush=False, end='\r'
+    )
+    #print()
 
+#
 async def run(): #run manual_controls()
     """Main function to connect to the drone and input manual controls"""
     
@@ -404,18 +433,17 @@ async def run(): #run manual_controls()
         await asyncio.sleep(1)
 
 async def joystick_event(drone):
-    global roll, pitch, throttle, yaw, PrevJoystickVals
-    print("--MAVSDK--async joystick_event()@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    global roll, pitch, throttle, yaw, PrevJoystickVals, RxJoyData, TxJoyMAVPkts
+    #print("--MAVSDK--async joystick_event()")
     while(True):
-        #if(True):  #joystick_count > 0 ):
-        # Get count of joysticks.
+        # Get count of Joysticks.
         joystick_count = pygame.joystick.get_count()
         JoyAxes = joystick_count   #pygame.joystick.Joystick(0).get_numaxes()
-        print(f"Number of joysticks: {joystick_count}")
+        #print(f"Number of Joysticks: {joystick_count}")
         done = False
         dec = 3 # round to decimal
-        while not done: # main loop
-            print("running manual control joystick loop ...") 
+        while not done: # main joystick event loop
+            #print("running manual control joystick loop ...") 
             await asyncio.sleep(0.1) # ten times a sec this code is executed
             # Event processing step.# Possible joystick events: JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN,
             # JOYBUTTONUP, JOYHATMOTION, JOYDEVICEADDED, JOYDEVICEREMOVED
@@ -426,27 +454,29 @@ async def joystick_event(drone):
                 if (True): 
                     now = datetime.now()
                     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    #print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]},  yaw:{joysticks[i][9]}" )
-                    await drone.manual_control.set_manual_control_input( float(joysticks[i][5]), float(joysticks[i][6]), float(joysticks[i][7]), float(joysticks[i][9]) )
+                    #print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]},  yaw:{Joysticks[i][9]}" )
+                    TxJoyMAVPkts += 1
+                    RxJoyData = f" roll:{Joysticks[i][5]} pitch:{Joysticks[i][6]} throttle:{Joysticks[i][7]} yaw:{Joysticks[i][9]} sw#:{Joysticks[i][11]};{Joysticks[i][12]}.{Joysticks[i][13]}.{Joysticks[i][14]}.{Joysticks[i][15]}.{Joysticks[i][16]},guid:{i}"
+                    await drone.manual_control.set_manual_control_input( float(Joysticks[i][5]), float(Joysticks[i][6]), float(Joysticks[i][7]), float(Joysticks[i][9]) )
                     #only if changged below
-                    if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(joysticks[i][5]), dec)) or \
-                    (round(float(PrevJoystickVals[i][6]), dec) != round(float(joysticks[i][6]), dec)) or \
-                    (round(float(PrevJoystickVals[i][7]), dec) != round(float(joysticks[i][7]), dec)) or \
-                    (round(float(PrevJoystickVals[i][8]), dec) != round(float(joysticks[i][8]), dec)) or \
-                    (round(float(PrevJoystickVals[i][9]), dec) != round(float(joysticks[i][9]), dec)) or \
-                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ) or \
-                    ( PrevJoystickVals[i][12] != joysticks[i][12] ) or \
-                    ( PrevJoystickVals[i][13] != joysticks[i][13] ) or \
-                    ( PrevJoystickVals[i][14] != joysticks[i][14] ) or \
-                    ( PrevJoystickVals[i][15] != joysticks[i][15] ) or \
-                    ( PrevJoystickVals[i][16] != joysticks[i][16] ) :
+                    if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(Joysticks[i][5]), dec)) or \
+                    (round(float(PrevJoystickVals[i][6]), dec) != round(float(Joysticks[i][6]), dec)) or \
+                    (round(float(PrevJoystickVals[i][7]), dec) != round(float(Joysticks[i][7]), dec)) or \
+                    (round(float(PrevJoystickVals[i][8]), dec) != round(float(Joysticks[i][8]), dec)) or \
+                    (round(float(PrevJoystickVals[i][9]), dec) != round(float(Joysticks[i][9]), dec)) or \
+                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(Joysticks[i][10]), dec) ) or \
+                    ( PrevJoystickVals[i][12] != Joysticks[i][12] ) or \
+                    ( PrevJoystickVals[i][13] != Joysticks[i][13] ) or \
+                    ( PrevJoystickVals[i][14] != Joysticks[i][14] ) or \
+                    ( PrevJoystickVals[i][15] != Joysticks[i][15] ) or \
+                    ( PrevJoystickVals[i][16] != Joysticks[i][16] ) :
                         #now = datetime.now()
                         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                        print(f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]}, yaw:{joysticks[i][9]}, #sw:{joysticks[i][11]}, sw1:{joysticks[i][12]}, sw2:{joysticks[i][13]}, sw3:{joysticks[i][14]}, sw4:{joysticks[i][15]}, sw5:{joysticks[i][16]}" )
- 
+                        #print(f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}" )
+                        RxJoyData = f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}"
             # check if current vals different tahn prev vals
             PrevJoystickVals.clear() # clears prev vals in prev vals dict
-            for i, j in joysticks.items():
+            for i, j in Joysticks.items():
                 #print ("joystick:",str(i)," vals:",j)
                 PrevJoystickVals[i] =  j # add current vals into old vals before rewrting new vals from joystick
             #
@@ -457,118 +487,145 @@ async def joystick_event(drone):
                 if event.type == pygame.JOYBUTTONDOWN:
                     print("Joystick button pressed.")
                     #if event.button == 0:
-                        #joystick = joysticks[event.device_index] #instance_id]
+                        #joystick = Joysticks[event.device_index] #instance_id]
                         #if joystick.rumble(0, 0.7, 500):
                             #print(f"Rumble effect played on joystick {event.instance_id}")
 
                 if event.type == pygame.JOYBUTTONUP:
                     print("Joystick button released.")
 
-                # Handle hotplugging (adding removing in real time usb joysticks
+                # Handle hotplugging (adding removing in real time usb Joysticks
                 if event.type == pygame.JOYDEVICEADDED:
                     # This event will be generated when the program starts for every
                     # joystick, filling up the list without needing to create them manually.
                     joy = pygame.joystick.Joystick(event.device_index)
-                    joysticks.update({joy.get_guid():[joy]}) # add object addr val to key=guid dict joysticks
+                    Joysticks.update({joy.get_guid():[joy]}) # add object addr val to key=guid dict Joysticks
                     print ("ADDING NEW joystick key:",joy.get_guid(),"  val:",[joy])
-                    for i, j in joysticks.items():
+                    for i, j in Joysticks.items():
                         print ("ADDED NEW joystick dict:",str(i)," vals:",j)
-                    print(f"ADDED Joystick {joy.get_instance_id()} is now connected {joysticks.keys()} ; {joysticks.values()} ; {joysticks.items()}" )
+                    print(f"ADDED Joystick {joy.get_instance_id()} is now connected {Joysticks.keys()} ; {Joysticks.values()} ; {Joysticks.items()}" )
                     joystick_count = pygame.joystick.get_count()
 
                 if event.type == pygame.JOYDEVICEREMOVED:
-                    for k, v in joysticks.items(): #for joystick in joysticks:  #.values():   #for joystick in joysticks:
+                    for k, v in Joysticks.items(): #for joystick in Joysticks:  #.values():   #for joystick in Joysticks:
                         jid = v[1] #.get_instance_id()
                         guid = k # keys are guid from pygame joy.get_guid()
                         print ("DISCONNECTING guid:",guid,"  jid:",jid)
                         if (event.instance_id == jid): 
-                            print ("DEL joysticks[guid] dict guid, inst id jid:",guid, jid)
+                            print ("DEL Joysticks[guid] dict guid, inst id jid:",guid, jid)
                             print(f"DISCONNECT Joystick {event.instance_id} is now disconnected")
-                            del joysticks[k] #event.instance_id] # joy.get_guid()
+                            del Joysticks[k] #event.instance_id] # joy.get_guid()
                             PrevJoystickVals = {} 
                             break # short circuit
             #
-            for joystick in joysticks.values():
+            for joystick in Joysticks.values():
                 jid = joystick[0].get_instance_id()
                 guid = joystick[0].get_guid() # from PYTHON OBJECT addr get guid from above when added new joystick event
-                joysticks.update( { guid : [ joystick[0] ] } ) # restart remove vals for key and replace with guid
-                joysticks[guid].append(jid)
+                Joysticks.update( { guid : [ joystick[0] ] } ) # restart remove vals for key and replace with guid
+                Joysticks[guid].append(jid)
                 # Get the name from the OS for the controller/joystick.
                 name = joystick[0].get_name() #print(f"Joystick name: {name}")
-                joysticks[guid].append(name) #print("add name joysticks[jid]:",joysticks[jid])
+                Joysticks[guid].append(name) #print("add name Joysticks[jid]:",Joysticks[jid])
 
                 #guid = joystick[0].get_guid()
                 #print(f"GUID: {guid}")
-                #joysticks[guid].append(guid)
-                #print("add GUID joysticks[jid]:",joysticks[jid])
+                #Joysticks[guid].append(guid)
+                #print("add GUID Joysticks[jid]:",Joysticks[jid])
 
                 power_level = joystick[0].get_power_level()  #print(f"Joystick's power level: {power_level}")
-                joysticks[guid].append(power_level)  #print("add power_level joysticks[jid]:",joysticks[jid])
+                Joysticks[guid].append(power_level)  #print("add power_level Joysticks[jid]:",Joysticks[jid])
 
                 # Usually axis run in pairs, up/down for one, and left/right for
                 # the other. Triggers count as axes.
                 axes = joystick[0].get_numaxes()
                 #print(f"Number of axes: {axes}")
-                joysticks[guid].append(axes)
-                #print("add axes joysticks[jid]:",joysticks[jid])
+                Joysticks[guid].append(axes)
+                #print("add axes Joysticks[jid]:",Joysticks[jid])
 
                 for i in range(axes):
                     axis = joystick[0].get_axis(i)
                     #print(f"Axis {i} value: {axis:>6.3f}")
-                    joysticks[guid].append(round(axis,5))
-                    #print(f"add axis {i} {joysticks[jid]}")
+                    Joysticks[guid].append(round(axis,5))
+                    #print(f"add axis {i} {Joysticks[jid]}")
 
                 buttons = joystick[0].get_numbuttons()
                 #print(f"Number of buttons: {buttons}")
-                joysticks[guid].append(buttons)
-                #print(f"add buttons {buttons} {joysticks[jid]}")
+                Joysticks[guid].append(buttons)
+                #print(f"add buttons {buttons} {Joysticks[jid]}")
 
                 for i in range(buttons):
                     button = joystick[0].get_button(i)
                     #print(f"Button {i:>2} value: {button}")
-                    joysticks[guid].append(button)
-                    #print(f"add button {i} {joysticks[jid]}")
+                    Joysticks[guid].append(button)
+                    #print(f"add button {i} {Joysticks[jid]}")
 
                 hats = joystick[0].get_numhats()
                 #print(f"Number of hats: {hats}")
-                joysticks[guid].append(hats)
-                #print(f"add hats {hats} {joysticks[jid]}")
+                Joysticks[guid].append(hats)
+                #print(f"add hats {hats} {Joysticks[jid]}")
 
                 # Hat position. All or nothing for direction, not a float like
                 # get_axis(). Position is a tuple of int values (x, y).
                 for i in range(hats):
                     hat = joystick[0].get_hat(i)
                     #print(f"hat: {hat}")
-                    joysticks[guid].append(hat) # comes back as a list, not an int value
+                    Joysticks[guid].append(hat) # comes back as a list, not an int value
                     #print(f"Hat {i} value: {str(hat)}")
-                    #print(f"add hat {i} {joysticks[jid]}")
+                    #print(f"add hat {i} {Joysticks[jid]}")
         ## END JOYSTICK EVENT ####
 
 async def print_position(drone):
+    global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
     async for position in drone.telemetry.position():
         #print("print_position():", position)
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK position msg converting") #, sending to G5 and or Efis(): ", date_time," ", position)
-        print("--MAVSDK-- RECVd position msg",  position )
+        #print("--MAVSDK-- RECVd position msg",  position )
+        RxMAVlen    = len(str(position))
+        RxMAVpkts  +=1
+        RxMAVmsg    = position
+        TxEfispkts +=1
+        TxEfislen   = len(str(position))
+        TxG5pkts   +=1
+        TxG5len     = len(str(position))
+        PRINT()
         SendAttitudeDataToG5simEfisSimMAVSDK(position)
 
 async def print_heading(drone):
+    global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
     async for heading in drone.telemetry.heading()  :
         #print(f"print_heading(): {heading}") 
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@-Received from ",Px4simAddrPort," MAVSDK heading converting") #, sending to G5 and or Efis(): ", date_time," ", heading)
-        print("--MAVSDK-- RECVd heading msg",  heading )
+        #print("--MAVSDK-- RECVd heading msg",  heading )
+        RxMAVlen = len(str(heading))
+        RxMAVpkts +=1
+        RxMAVmsg = heading
+        TxEfispkts +=1
+        TxEfislen   = len(str(heading))
+        TxG5pkts   +=1
+        TxG5len     = len(str(heading))
+        PRINT()
         SendAttitudeDataToG5simEfisSimMAVSDK(heading)
 
 async def print_attitude_euler(drone):
+    global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
     async for attitude_euler in drone.telemetry.attitude_euler()  :
         #print("print_attitude_euler():", attitude_euler )
         #now = datetime.now()
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK attitude_euler converting") #", sending to G5 and or Efis(): ", date_time," ", attitude_euler)
-        print("--MAVSDK-- RECVd attitude_euler msg",  attitude_euler )
+        #print("--MAVSDK-- RECVd attitude_euler msg",  attitude_euler )
+        RxMAVlen = len(str(attitude_euler))
+        RxMAVpkts +=1
+        RxMAVmsg = attitude_euler
+        TxEfispkts +=1
+        TxEfislen   = len(str(attitude_euler))
+        TxG5pkts   +=1
+        TxG5len     = len(str(attitude_euler))
+        PRINT()
         SendAttitudeDataToG5simEfisSimMAVSDK(attitude_euler)
 
 async def print_battery(drone):
