@@ -305,9 +305,9 @@ if (useDronekit == True):
 ################################################################################################
 ################################################################################################
 ################################################################################################
-# if (useDronekit == False):
 ###############################################################################################################################
 ###############################################################################################################################
+#if useMAVSDK: print("useMAVSDK = True")
 # using MAVSDK libs packages to connect to PX4 and send data dict to pyG and pyEfis , also 
 # if usb controller lie Great planes I-controller then can be used as manual input
 # manual input commands use joystick axis
@@ -456,8 +456,11 @@ async def joystick_event(drone):
                     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                     #print(f"--MAVSDK-- SENDing 1/10 sec MAN CTL async JOYSTICK event: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]},  yaw:{Joysticks[i][9]}" )
                     TxJoyMAVPkts += 1
-                    RxJoyData = f" roll:{Joysticks[i][5]} pitch:{Joysticks[i][6]} throttle:{Joysticks[i][7]} yaw:{Joysticks[i][9]} sw#:{Joysticks[i][11]};{Joysticks[i][12]}.{Joysticks[i][13]}.{Joysticks[i][14]}.{Joysticks[i][15]}.{Joysticks[i][16]},guid:{i}"
-                    await drone.manual_control.set_manual_control_input( float(Joysticks[i][5]), float(Joysticks[i][6]), float(Joysticks[i][7]), float(Joysticks[i][9]) )
+                    RxJoyData = f" roll:{Joysticks[i][5]} pitch:{Joysticks[i][6]} throttle:{-1*(-0.5+float(Joysticks[i][7])/2)} yaw:{Joysticks[i][9]} sw#:{Joysticks[i][11]};{Joysticks[i][12]}.{Joysticks[i][13]}.{Joysticks[i][14]}.{Joysticks[i][15]}.{Joysticks[i][16]},guid:{i}"
+                    #try: drone 0-1 plane -1to+1 range throttle  # (0.5+float(Joysticks[i][7])/2
+                    await drone.manual_control.set_manual_control_input( -1*float(Joysticks[i][6]), float(Joysticks[i][5]), -1*(-0.5+float(Joysticks[i][7])/2), float(Joysticks[i][9]) )
+                    #except:
+                        #print("ERROR reading joystick throttle out of range... ")
                     #only if changged below
                     if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(Joysticks[i][5]), dec)) or \
                     (round(float(PrevJoystickVals[i][6]), dec) != round(float(Joysticks[i][6]), dec)) or \
@@ -473,7 +476,7 @@ async def joystick_event(drone):
                         #now = datetime.now()
                         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                         #print(f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}" )
-                        RxJoyData = f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}"
+                        RxJoyData = f"JOYCHANGE: roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}, date:{date_time}, guid:{i}"  # --MAVSDK--async joystick_event() 
             # check if current vals different tahn prev vals
             PrevJoystickVals.clear() # clears prev vals in prev vals dict
             for i, j in Joysticks.items():
