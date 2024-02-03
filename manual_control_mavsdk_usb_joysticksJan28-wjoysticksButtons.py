@@ -40,7 +40,7 @@ async def manual_controls():
     """Main function to connect to the drone and input manual controls"""
     # Connect to the Simulation
     drone = System()
-    '''
+    
     print("Waiting for drone to connect...")
     await drone.connect(system_address="udp://:14540")
     #print("Waiting for drone to connect...")
@@ -53,7 +53,7 @@ async def manual_controls():
         if state.is_connected:
             print(f"-- Connected to drone!")
             break
-
+    '''
     # Checking if Global Position Estimate is ok
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
@@ -63,15 +63,15 @@ async def manual_controls():
     info = await drone.info.get_version() # firmware version
     print("firmware version", info)
     #
-    '''
-    '''//Iterate through and detect systems connected
-    for (auto system : mavsdk.systems()) {
-        std::cout << "Found system with MAVLink system ID: " << static_cast<int>(system->get_system_id())
-              << ", connected: " << (system->is_connected() ? "yes" : "no")
-              << ", has autopilot: " << (system->has_autopilot() ? "yes" : "no") << '\n';
-    }'''
+    
+    #//Iterate through and detect systems connected
+    #for (auto system : mavsdk.systems()) {
+    #    std::cout << "Found system with MAVLink system ID: " << static_cast<int>(system->get_system_id())
+    #          << ", connected: " << (system->is_connected() ? "yes" : "no")
+    #          << ", has autopilot: " << (system->has_autopilot() ? "yes" : "no") << '\n';
+    #}
     # https://docs.px4.io/main/en/advanced_config/parameter_reference.html
-    '''
+    
     # Arming the drone
     print("-- Arming")
     await drone.action.arm()
@@ -80,10 +80,10 @@ async def manual_controls():
     print("-- Taking off")
     await drone.action.takeoff()
     time.sleep(15) # wait to get to position hold
-
+    '''
     print("-- Starting manual control")
     await drone.manual_control.set_manual_control_input(float(0), float(0), float(0.5), float(0)) #needs this ?
-    '''
+    
     # send mavlink messages from usb josticks
     asyncio.ensure_future(joystick_event(drone))
     #asyncio.ensure_future(print_position(drone))
@@ -108,7 +108,28 @@ async def joystick_event(drone):
             # JOYBUTTONUP, JOYHATMOTION, JOYDEVICEADDED, JOYDEVICEREMOVED
             # and for each joystick create a dict entry using guid as key and object addr and guid and name etc as values as a list
             #
-            # check if current vals different tahn prev vals
+            # check if current vals different than prev vals
+            dec = 3 # round to decimal
+            for i, j in PrevJoystickVals.items():
+                if (True):
+                    now = datetime.now()
+                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    #print(f"--MAVSDK--async joystick_event(): date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
+                    await drone.manual_control.set_manual_control_input( float(joysticks[i][5]), float(joysticks[i][6]), float(joysticks[i][7]), float(joysticks[i][9]) )
+                    #only if changed below
+                    if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(joysticks[i][5]), dec)) or \
+                    (round(float(PrevJoystickVals[i][6]), dec) != round(float(joysticks[i][6]), dec)) or \
+                    (round(float(PrevJoystickVals[i][7]), dec) != round(float(joysticks[i][7]), dec)) or \
+                    (round(float(PrevJoystickVals[i][8]), dec) != round(float(joysticks[i][8]), dec)) or \
+                    (round(float(PrevJoystickVals[i][9]), dec) != round(float(joysticks[i][9]), dec)) or \
+                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ) or \
+                    ( PrevJoystickVals[i][12] != joysticks[i][12] ) or \
+                    ( PrevJoystickVals[i][13] != joysticks[i][13] ) or \
+                    ( PrevJoystickVals[i][14] != joysticks[i][14] ) or \
+                    ( PrevJoystickVals[i][15] != joysticks[i][15] ) or \
+                    ( PrevJoystickVals[i][16] != joysticks[i][16] ) :
+                        print(f"--MAVSDK--async joystick_event(): date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]}, yaw:{joysticks[i][9]}, #sw:{joysticks[i][11]}, sw1:{joysticks[i][12]}, sw2:{joysticks[i][13]}, sw3:{joysticks[i][14]}, sw4:{joysticks[i][15]}, sw5:{joysticks[i][16]}" )
+            #
             PrevJoystickVals.clear() # clears prev vals in prev vals dict
             for i, j in joysticks.items():
                 #print ("joystick:",str(i)," vals:",j)
@@ -219,29 +240,7 @@ async def joystick_event(drone):
                     joysticks[guid].append(hat) # comes back as a list, not an int value
                     #print(f"Hat {i} value: {str(hat)}")
                     #print(f"add hat {i} {joysticks[jid]}")
-            #
-            dec = 3 # round to decimal
-            for i, j in PrevJoystickVals.items():
-                if (True):
-                    now = datetime.now()
-                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    #print(f"--MAVSDK--async joystick_event(): date:{date_time}, guid:{i}, roll:{j[5]}, pitch:{j[6]}, throttle:{j[7]},  yaw:{j[9]}" )
-                    #await drone.manual_control.set_manual_control_input( float(j[5]), float(j[6]), float(j[7]), float(j[9]) )
-                    #only if chnaged below
-                    if  (round(float(PrevJoystickVals[i][5]), dec) != round(float(joysticks[i][5]), dec)) or \
-                    (round(float(PrevJoystickVals[i][6]), dec) != round(float(joysticks[i][6]), dec)) or \
-                    (round(float(PrevJoystickVals[i][7]), dec) != round(float(joysticks[i][7]), dec)) or \
-                    (round(float(PrevJoystickVals[i][8]), dec) != round(float(joysticks[i][8]), dec)) or \
-                    (round(float(PrevJoystickVals[i][9]), dec) != round(float(joysticks[i][9]), dec)) or \
-                    (round(float(PrevJoystickVals[i][10]), dec) != round(float(joysticks[i][10]), dec) ) or \
-                    ( PrevJoystickVals[i][12] != joysticks[i][12] ) or \
-                    ( PrevJoystickVals[i][13] != joysticks[i][13] ) or \
-                    ( PrevJoystickVals[i][14] != joysticks[i][14] ) or \
-                    ( PrevJoystickVals[i][15] != joysticks[i][15] ) or \
-                    ( PrevJoystickVals[i][16] != joysticks[i][16] ) :
-                        print(f"--MAVSDK--async joystick_event(): date:{date_time}, guid:{i}, roll:{joysticks[i][5]}, pitch:{joysticks[i][6]}, throttle:{joysticks[i][7]}, yaw:{joysticks[i][9]}, #sw:{joysticks[i][11]}, sw1:{joysticks[i][12]}, sw2:{joysticks[i][13]}, sw3:{joysticks[i][14]}, sw4:{joysticks[i][15]}, sw5:{joysticks[i][16]}" )
- 
-        print("running jmanual control oystick loop ...") #"drone.manual_control.set_manual_control_input(pitch, roll, throttle, yaw)")
+        print("running manual control joystick loop ...") #"drone.manual_control.set_manual_control_input(pitch, roll, throttle, yaw)")
         await asyncio.sleep(0.1)
 
 

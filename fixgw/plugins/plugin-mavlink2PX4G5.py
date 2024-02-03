@@ -187,7 +187,7 @@ class MainThread(threading.Thread):
             time.sleep(.05) # loop delay
             self.count += 1
             self.tmp="FIXGW(run) mavlink plugin run loop thread... waiting for data on ... "+self.FIXGWserverIPaddr+" self.FIXGWserverIPaddr ,  "+ str(self.FIXGWserverIPport)+"self.FIXGWserverIPport"
-            self.log.debug(self.tmp) 
+            #self.log.debug(self.tmp) 
             # Do something useful here  
             self.running = False
             #print("self.FIXGWserverIPaddr-", self.FIXGWserverIPaddr ,  "  self.FIXGWserverIPport-",self.FIXGWserverIPport)
@@ -200,7 +200,7 @@ class MainThread(threading.Thread):
                     #print(f"Connected to {self.addr}")
                     self.data_pickled = self.conn.recv(1024)
                     self.data_dict = pickle.loads(self.data_pickled)   
-                    print("FIXGW plugin(run) plugin-mavlink2PX4G5.py received mavlink_data_dict:  ",self.data_dict)
+                    print("FIXGW plugin(run) plugin-mavlink2PX4G5.py received mavlink_data_dict:  ",self.data_dict, flush=False, end='\r')
                     #print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled)) #, self.data_dict)
                     # copy key, value pairs into data dict for efis                   
                     #try: self.parent.db_write("ALT", self.data_dict["alt"]/1000)
