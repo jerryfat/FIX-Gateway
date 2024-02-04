@@ -76,6 +76,10 @@ pip install pyavtools
 pip install geomag
 pip install PySide6
 pip install pyg5
+for text to speech:
+pip install gTTS
+sudo apt install mpg321
+
 
 ## to run app demo from FIXGW plugin called plugin-mavlink2PX4G5
 ( FIX-Gateway/fixgw/plugins/plugin-mavlink2PX4G5.py )

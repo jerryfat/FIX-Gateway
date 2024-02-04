@@ -307,7 +307,9 @@ if (useDronekit == True):
 ################################################################################################
 ###############################################################################################################################
 ###############################################################################################################################
-#if useMAVSDK: print("useMAVSDK = True")
+#if "useMAVSDK = True"
+
+
 # using MAVSDK libs packages to connect to PX4 and send data dict to pyG and pyEfis , also 
 # if usb controller lie Great planes I-controller then can be used as manual input
 # manual input commands use joystick axis
@@ -407,22 +409,35 @@ async def run(): #run manual_controls()
               << ", has autopilot: " << (system->has_autopilot() ? "yes" : "no") << '\n';
     }'''
     # https://docs.px4.io/main/en/advanced_config/parameter_reference.html
-    '''
+    
     # to test manual control arm takeoff wait for hold go to manual input
     # Arming the drone
-    print("-- Arming")
-    await drone.action.arm()
+    #print("-- Arming... ")
+    #await drone.action.arm()
 
     # Takeoff the vehicle
-    print("-- Taking off")
-    await drone.action.takeoff()
-    time.sleep(15) # wait to get to position hold
-    '''
-    #print("-- Starting manual control")
+    #print("-- Taking off... ")
+    #await drone.action.takeoff()
+    #time.sleep(10) # wait to get to position hold
+    #
+    #async for flight_mode in drone.telemetry.flight_mode():
+    #    print("Before Changing FlightMode:", flight_mode)
+
+    print("-- CHANGING FLIGHT MODE TO HOLD... ")
+    await drone.action.hold()   #drone.action_server.FlightMode(4)  #flight_mode_change()
+    time.sleep(1) # wait 
+    #async for flight_mode in drone.telemetry.flight_mode():
+    #print("After Changing FlightMode:", flight_mode)
+    #print("-- Starting manual control... ")
     #await drone.manual_control.set_manual_control_input(float(0), float(0), float(0.5), float(0)) #needs this ?
     
     #print("-- Starting altitude hold control")
     #await drone.manual_control.start_altitude_control()
+    #print("-- Starting position hold control... ")
+    #await drone.manual_control.start_position_control()
+    #
+    #print("-- Landing")
+    #await drone.action.land()
     #
     # send mavlink messages from usb josticks
     asyncio.ensure_future(joystick_event(drone))
@@ -458,7 +473,9 @@ async def joystick_event(drone):
                     TxJoyMAVPkts += 1
                     RxJoyData = f" roll:{Joysticks[i][5]} pitch:{Joysticks[i][6]} throttle:{-1*(-0.5+float(Joysticks[i][7])/2)} yaw:{Joysticks[i][9]} sw#:{Joysticks[i][11]};{Joysticks[i][12]}.{Joysticks[i][13]}.{Joysticks[i][14]}.{Joysticks[i][15]}.{Joysticks[i][16]},guid:{i}"
                     #try: drone 0-1 plane -1to+1 range throttle  # (0.5+float(Joysticks[i][7])/2
-                    await drone.manual_control.set_manual_control_input( -1*float(Joysticks[i][6]), float(Joysticks[i][5]), -1*(-0.5+float(Joysticks[i][7])/2), float(Joysticks[i][9]) )
+                    # AETR ael-roll , ele-pitch , thr-thr , yaw  ( -1*float(Joysticks[i][6]), float(Joysticks[i][5]), -1*(-0.5+float(Joysticks[i][7])/2), float(Joysticks[i][9]) 
+                    await drone.manual_control.set_manual_control_input( -1*float(Joysticks[i][6]), float(Joysticks[i][5]), \
+                                                                         -1*(-0.5+float(Joysticks[i][7])/2), float(Joysticks[i][9]) )
                     #except:
                         #print("ERROR reading joystick throttle out of range... ")
                     #only if changged below
@@ -477,7 +494,7 @@ async def joystick_event(drone):
                         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                         #print(f"--MAVSDK--async joystick_event() CHANGE: date:{date_time}, guid:{i}, roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}" )
                         RxJoyData = f"JOYCHANGE: roll:{Joysticks[i][5]}, pitch:{Joysticks[i][6]}, throttle:{Joysticks[i][7]}, yaw:{Joysticks[i][9]}, #sw:{Joysticks[i][11]}, sw1:{Joysticks[i][12]}, sw2:{Joysticks[i][13]}, sw3:{Joysticks[i][14]}, sw4:{Joysticks[i][15]}, sw5:{Joysticks[i][16]}, date:{date_time}, guid:{i}"  # --MAVSDK--async joystick_event() 
-            # check if current vals different tahn prev vals
+            # check if current vals different hahn prev vals
             PrevJoystickVals.clear() # clears prev vals in prev vals dict
             for i, j in Joysticks.items():
                 #print ("joystick:",str(i)," vals:",j)
@@ -487,15 +504,42 @@ async def joystick_event(drone):
                 if event.type == pygame.QUIT:
                     done = True  # Flag that we are done so we exit this loop.
 
-                if event.type == pygame.JOYBUTTONDOWN:
-                    print("Joystick button pressed.")
-                    #if event.button == 0:
-                        #joystick = Joysticks[event.device_index] #instance_id]
-                        #if joystick.rumble(0, 0.7, 500):
-                            #print(f"Rumble effect played on joystick {event.instance_id}")
-
-                if event.type == pygame.JOYBUTTONUP:
-                    print("Joystick button released.")
+                if event.type == pygame.JOYBUTTONDOWN:#print("Joystick button pressed.")
+                    if event.button == 0: 
+                        print("Joystick switch=off sw#:",event.button," ")
+                        # Arming the drone
+                        print("-- Arming... ")
+                        await drone.action.arm()
+                        #
+                    if event.button == 1: 
+                        print("Joystick switch=off sw#:",event.button," ")
+                        print("-- Starting ALTITUDE HOLD control... not implemented ")
+                        #await drone.manual_control.start_altitude_control()
+                    if event.button == 2: print("Joystick switch=off sw#:",event.button," ")
+                    if event.button == 3: 
+                        print("Joystick switch=on sw#:",event.button," ")
+                        print("-- Landing")
+                        await drone.action.land()
+                    if event.button == 4: 
+                        print("Joystick switch=on sw#:",event.button," ")               
+                        # Takeoff the vehicle
+                        print("-- Taking off... ")
+                        await drone.action.takeoff()
+                        #
+                if event.type == pygame.JOYBUTTONUP: #print("Joystick button released.")
+                    if event.button == 0: 
+                        print("Joystick switch=on sw#:",event.button," ")
+                        # DisSArming the drone
+                        print("-- Dis-Arming... ")
+                        await drone.action.disarm()
+                        #
+                    if event.button == 1: 
+                        print("Joystick switch=on sw#:",event.button," ")
+                        print("-- Starting POSITION HOLD control... not implemented ")
+                        #await drone.manual_control.start_position_control()
+                    if event.button == 2: print("Joystick switch=on sw#:",event.button," ")
+                    if event.button == 3: print("Joystick switch=off sw#:",event.button," ")
+                    if event.button == 4: print("Joystick switch=off sw#:",event.button," ")
 
                 # Handle hotplugging (adding removing in real time usb Joysticks
                 if event.type == pygame.JOYDEVICEADDED:
