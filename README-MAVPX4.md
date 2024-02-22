@@ -160,6 +160,7 @@ sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
 
 =================================================================================================
+dronekit python 3.10 error MutableMapping, collections moved to collections.abc ?
 ""If I have correctly understood the error, and the evolution between Python 3.9 and 3.10, then I propose the following correction (to be confirmed by the owners of the module):
 Replace "collections.MutableMapping" by "collections.abc.MutableMapping" (in the "dronekit/__init__.py" file).""
 ## if using Python3.10 and later you must add to file /usr/lib/python3.10/collections/__init__.py
