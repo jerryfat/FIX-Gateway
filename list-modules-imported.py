@@ -255,7 +255,7 @@ exclusions = "[" + "__main__.py" + "]"
 print("\n#### append to sysroot.toml: ####\n")
 for component in ModuleWheels:
     whl = ModuleWheels[component] # print dict ke:value seems to add a space when printing, this does not
-    print("["+component+"]")
+    print("["+component.lower()+"]")
     print('plugin = '       + plugin)
     print('wheel =', whl) #"\"", str(ModuleWheels[component]).replace(" ","\"") , "\"") #space at front of wheel ?
     print('dependencies = ' + dependencies )
