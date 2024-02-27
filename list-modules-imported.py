@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# JerryFat Feb27,2024
 from __future__ import print_function
 
 import sys, os
@@ -11,6 +13,10 @@ import pyavtools  # twp packages deps
 from platform import python_version
 
 ######################################################################################    
+#import datetime 
+n#ow = datetime.now()
+#date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+#print("date_time:",date_time)
 
 print("########## START ########## START ########## START ########## START ########## START ##########")
 # Parse connection argument
