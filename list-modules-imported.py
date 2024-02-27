@@ -173,13 +173,15 @@ else:
 
 print("allmodules:",allmodules)
 #exit()
-ModuleWheels = {} # dict key:val  module:wheel.whl
-VerifyAllWheelsList = []
+
 for i in allmodules: 
     # if not a ''built in'' pkg  in python, then download pkg module from pip each wheel as .whl name for each name in modulenames
     name = "\'"+ i + "\'"
     #print("i:",name) 
     component = "[" + i + "]"  #str(i).split("'")
+    #
+    ModuleWheels = {} # dict key:val  module:wheel.whl
+    VerifyAllWheelsList = []
     #
     if ( " (built-in)>" not in name ) or  ("ERROR" not in name ): # skip downloading and adding module,  if  it is ''built-in'' package
         #print("name:",name)
@@ -190,13 +192,13 @@ for i in allmodules:
         output = str(proc.stdout.read()).replace("\\n" , "\n\b") #.split("\n")
         output = str(output).replace("b'" , "") 
         output = str(output).replace("\'" , "") 
-        print("pip download stdout:\n",str(output) ) #("\n")) # print("stdout: ",output.splitlines() ) #("\n"))           
-        wheels = output.split("\n")  
         if("ERROR" in str(output) ): # no module wheel names to get or get module
             print("###### ", component, " module IGNORE, no wheel needed from pip download ######" ) 
         else:
             print("###### ", component, " module ###### \n##### STARTING - getting module .whl(s) for pyqtdeploy" )
-
+        print("pip download stdout:\n",str(output) ) #("\n")) # print("stdout: ",output.splitlines() ) #("\n"))           
+        wheels = output.split("\n")  
+        #
         for whl in wheels: # check each line in wheels returned back from pip dowload command in subproccess
             if ("Collecting" in whl):  # if string found in line from pip download stdout
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
@@ -206,7 +208,7 @@ for i in allmodules:
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
                     if ("Downloading" in whl): 
                         wheel = whl.replace( ("Downloading "+cwd+"/wheels/") , "")
-                        wheel = wheel.replace("\x08  ", "")
+                        wheel = wheel.replace("\x08", "")
                         print('#### wheel = ', wheel) 
                         wheel = wheel.lower()
                         moduleStr = wheel.split("-")
@@ -248,18 +250,18 @@ for i in allmodules:
                     print("#### 'Successfully downloaded' txt in stdout ",component)  # printout sysroot.toml b.decode('utf-8')
                     print("###### FINISHED getting wheels for: ", whl.replace("\x08Successfully downloaded " , "")  )
                     VerifyAllWheelsList = whl.replace("\x08Successfully downloaded " , "").split(" ")
-                    print("VerifyAllWheels()", VerifyAllWheelsList, "\nlen(ModuleWheels):", len(ModuleWheels) ," len(VerifyAllWheelsList)", len(VerifyAllWheelsList))
-                    
+                    print("VerifyAllWheels()", VerifyAllWheelsList, "len(ModuleWheels):", len(ModuleWheels) ," len(VerifyAllWheelsList)", len(VerifyAllWheelsList))
+                    print("ModuleWheels()", ModuleWheels, "len(ModuleWheels):", len(ModuleWheels) ," len(VerifyAllWheelsList)", len(VerifyAllWheelsList))
                     for module in VerifyAllWheelsList:
                         for component in ModuleWheels:
-                            if (component in module):
+                            if (component in module.replace("-","_")) or (component.replace("_","-") in module):
                                 print("VERIFY component:", component , " ==  module:", module, "  pip wheel:", ModuleWheels[ component ])
                             #else:
-                                #print("VERIFY LIST ERROR component and module DOES NOT exist, component:", component , "  module:", module)
-                    if (len(ModuleWheels) != len(VerifyAllWheelsList)): 
-                        print("ERROR VERIFYING, mismatch in Downloaded components vs Saved wheels")
-                    else:
-                        print("VERIFY OK len(ModuleWheels):", len(ModuleWheels) ," len(VerifyAllWheelsList)", len(VerifyAllWheelsList))
+                                #print("ERROR VERIFY component:", component , " ==  module:", module, "  pip wheel:", ModuleWheels[ component ])
+                    if (len(ModuleWheels) == len(VerifyAllWheelsList)): 
+                        #print("VERIFY ERROR , mismatch in Downloaded components vs Saved wheels")
+                        #else:
+                        print("VERIFY SUCCESS len(ModuleWheels):", len(ModuleWheels) ," len(VerifyAllWheelsList)", len(VerifyAllWheelsList), "\n", ModuleWheels,"\n", VerifyAllWheelsList)
     else:
         print("###### skipped ", i, " ###### --> IGNORING module "+component + " is a (built-in) ...")
 
