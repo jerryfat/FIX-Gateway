@@ -159,6 +159,16 @@ sudo tcpdump -i lo -n udp port 2100 'port for pyEfis data'
 sudo tcpdump -i lo -n udp port 65432 'port for pyG5 data'
 =================================================================================================
 
+feb17 update:
+$ xed /home/jf/Documents/pyqt-crom/venv/pyqt-crom-venv/lib/python3.10/site-packages/dronekit/__init__.py
+#import collections
+try: # for dronekit after python 3.8 # if using Python 3.10+
+    import collections.abc
+    from collections.abc import MutableMapping
+except ImportError: # if using Python 3.10-
+    import collections
+    from collections     import MutableMapping
+also change line 2696 to class Parameters(collections.abc.MutableMapping, HasObservers):  from class Parameters(collections.MutableMapping, HasObservers):
 =================================================================================================
 ""If I have correctly understood the error, and the evolution between Python 3.9 and 3.10, then I propose the following correction (to be confirmed by the owners of the module):
 Replace "collections.MutableMapping" by "collections.abc.MutableMapping" (in the "dronekit/__init__.py" file).""
