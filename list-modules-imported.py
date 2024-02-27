@@ -206,15 +206,20 @@ for i in allmodules:
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
                     if ("Downloading" in whl): 
                         wheel = whl.replace( ("Downloading "+cwd+"/wheels/") , "")
+                        wheel = wheel.replace("\x08  ", "")
                         print('#### wheel = ', wheel) 
                         moduleStr = wheel.split("-")
-                        module = moduleStr[0].split(" ")[2] 
+                        print ("moduleStr: ", moduleStr)
+                        print ("moduleStr[0].split(" ")", moduleStr[0].split(" ") )
+                        module = moduleStr[0].split(" ")[1] 
                         print(moduleStr, module )
                         ModuleWheels[ module ] = wheel.replace("\x08  ","")
                     if ("File was already downloaded " in whl):
                         wheel = whl.replace( ("File was already downloaded "+cwd+"/wheels/"), "")
                         print('#### wheel = ', wheel) 
                         moduleStr = wheel.split("-")
+                        print ("moduleStr: ", moduleStr)
+                        print ("moduleStr[0].split(" ")", moduleStr[0].split(" ") )
                         module = moduleStr[0].split(" ")[2] 
                         print(moduleStr, module )
                         ModuleWheels[ module ] = wheel.replace("\x08  ","")
@@ -223,10 +228,13 @@ for i in allmodules:
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
                     print("#### 'Saved' txt in stdout ",component)
                     if ("Saved " in whl): 
-                        wheel = whl.replace( ("Saved ./wheels/") , "")
+                        wheel = whl.replace( ("\x08Saved ./wheels/") , "")
+                        wheel = wheel.replace("\x08  ","")
                         print('wheel = ', wheel) 
                         moduleStr = wheel.split("-")
-                        module = moduleStr[0].split(" ")[2] 
+                        print ("moduleStr: ", moduleStr)
+                        print ("moduleStr[0].split(" ")", moduleStr[0].split(" ") )
+                        module = moduleStr[0].split(" ")[0] 
                         print(moduleStr, module )
                         ModuleWheels[ module ] = wheel.replace("\x08  ","")
                     print('wheel = '        + whl.replace("Saved ./wheels/" , "")  )
