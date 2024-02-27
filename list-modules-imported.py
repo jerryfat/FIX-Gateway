@@ -206,7 +206,7 @@ for i in allmodules:
                     dependencies = requests.get(pypi_url).json()
             if (("Downloading" in whl) or ("File was already downloaded" in whl)): 
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
-                    if ("Downloading" in whl): 
+                    if ("Downloading" in whl) and (".metadata" not in whl): 
                         wheel = whl.replace( ("Downloading "+cwd+"/wheels/") , "")
                         wheel = wheel.replace("\x08", "")
                         print('#### wheel = ', wheel) 
