@@ -1,91 +1,7 @@
 from __future__ import print_function
 
 import sys, os
-'''
-import os, time, rlcompleter, readline, lxml, yaml
 
-import logging
-import logging.config
-import argparse
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
-import yaml
-import importlib
-#----------------
-##from __future__ import print_function
-import sys
-sys.path.append("/usr/local/python/cv2/python-3.6/")
-sys.path.append("../")
-
-#from PyQt5 import QtWidgets as qtw
-#from PyQt5 import QtGui as qtg
-#from PyQt5 import QtCore as qtc
-#
-from PyQt5.QtCore import Qt, QSize, QTimer
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMenu, QMdiArea, QMdiSubWindow, QMenuBar, QAction, qApp,  QStatusBar, QMessageBox, QAbstractItemView
-from PyQt5.QtGui import QPalette, QColor
-#
-from PyQt5 import QtWidgets # for mdi demo
-
-# DRONEKIT
-from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
-# EOF on TCP socket forever loop
-# exit button pressed
-
-
-from pymavlink import mavutil # Needed for command message definitions
-
-# Import ardupilotmega module for MAVLink 1
-from pymavlink.dialects.v10 import ardupilotmega as mavlink1
-
-# Import common module for MAVLink 2
-from pymavlink.dialects.v20 import common as mavlink2
-
-import time
-from datetime import datetime, timedelta
-#
-#import tkinter as tk # python3 gui widgets# Import mavutil
-#from tkinter import ttk
-#from tkinter import scrolledtext
-# xml
-import xml.dom.minidom
-import xml.etree.ElementTree as ET
-
-# gui
-#from tkinter import *
-#import tkMessageBox
-#import tkinter
-#from tkinter import messagebox
-#from tkinter import filedialog  # for file open close dialog box
-#from tkinter import Menu
-
-
-# start and use SITL internally
-import dronekit_sitl
-#
-import json # to convert strings to python dictionaries
-
-import socket  #for tcp/udp
-#
-import os
-#
-import struct  # forpacking dict into binary to send dict over socket
-import pickle  # for sending over tcp
-
-import cherrypy
-from jinja2 import Environment, FileSystemLoader
-# from __future__ import print_function
-import os
-import simplejson
-import time
-
-
-
-# Set up option parsing to get connection string --connect "connection_string" on cli
-import argparse
-'''
 import subprocess # non-blocking
 import requests # for pip dependencies info and msg text
 # demo imports
@@ -282,6 +198,93 @@ for component in ModuleWheels:
     print("")
 
 print("########## END ########## END ########## END ########## END ########## END ##########")
+
+'''
+import os, time, rlcompleter, readline, lxml, yaml
+
+import logging
+import logging.config
+import argparse
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+import yaml
+import importlib
+#----------------
+##from __future__ import print_function
+import sys
+sys.path.append("/usr/local/python/cv2/python-3.6/")
+sys.path.append("../")
+
+#from PyQt5 import QtWidgets as qtw
+#from PyQt5 import QtGui as qtg
+#from PyQt5 import QtCore as qtc
+#
+from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMenu, QMdiArea, QMdiSubWindow, QMenuBar, QAction, qApp,  QStatusBar, QMessageBox, QAbstractItemView
+from PyQt5.QtGui import QPalette, QColor
+#
+from PyQt5 import QtWidgets # for mdi demo
+
+# DRONEKIT
+from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative, Command   
+# EOF on TCP socket forever loop
+# exit button pressed
+
+
+from pymavlink import mavutil # Needed for command message definitions
+
+# Import ardupilotmega module for MAVLink 1
+from pymavlink.dialects.v10 import ardupilotmega as mavlink1
+
+# Import common module for MAVLink 2
+from pymavlink.dialects.v20 import common as mavlink2
+
+import time
+from datetime import datetime, timedelta
+#
+#import tkinter as tk # python3 gui widgets# Import mavutil
+#from tkinter import ttk
+#from tkinter import scrolledtext
+# xml
+import xml.dom.minidom
+import xml.etree.ElementTree as ET
+
+# gui
+#from tkinter import *
+#import tkMessageBox
+#import tkinter
+#from tkinter import messagebox
+#from tkinter import filedialog  # for file open close dialog box
+#from tkinter import Menu
+
+
+# start and use SITL internally
+import dronekit_sitl
+#
+import json # to convert strings to python dictionaries
+
+import socket  #for tcp/udp
+#
+import os
+#
+import struct  # forpacking dict into binary to send dict over socket
+import pickle  # for sending over tcp
+
+import cherrypy
+from jinja2 import Environment, FileSystemLoader
+# from __future__ import print_function
+import os
+import simplejson
+import time
+
+
+
+# Set up option parsing to get connection string --connect "connection_string" on cli
+import argparse
+'''
+
 
 '''
 std output from pip download
