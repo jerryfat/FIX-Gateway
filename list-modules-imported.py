@@ -190,7 +190,7 @@ for i in allmodules:
 
 
 plugin = "\"wheel\""
-dependencies = "[]"  #"[" + "Python:importlib.resources, Python:os" + "]"
+dependencies = "[" + "Python:importlib.resources, Python:os" + "]"
 exclusions = "[" + "__main__.py" + "]" 
 
 print("\n#### append to sysroot.toml: ####\n")
