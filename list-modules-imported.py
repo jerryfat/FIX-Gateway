@@ -178,7 +178,7 @@ for i in allmodules:
     # if not a ''built in'' pkg  in python, then download pkg module from pip each wheel as .whl name for each name in modulenames
     name = "\'"+ i + "\'"
     #print("i:",name) 
-    component = "[" + i + "]"  #str(i).split("'")
+    #component = "[" + i + "]"  #str(i).split("'")
     #
     ModuleWheels = {} # dict key:val  module:wheel.whl
     VerifyAllWheelsList = []
@@ -202,6 +202,7 @@ for i in allmodules:
         for whl in wheels: # check each line in wheels returned back from pip dowload command in subproccess
             if ("Collecting" in whl):  # if string found in line from pip download stdout
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
+                    component = "[" + i + "]"  #str(i).split("'")
                     pypi_url = 'https://pypi.python.org/pypi/' + component + '/json'
                     dependencies = requests.get(pypi_url).json()
             if (("Downloading" in whl) or ("File was already downloaded" in whl)): 
