@@ -14,7 +14,7 @@ from platform import python_version
 
 ######################################################################################    
 #import datetime 
-n#ow = datetime.now()
+#now = datetime.now()
 #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 #print("date_time:",date_time)
 
