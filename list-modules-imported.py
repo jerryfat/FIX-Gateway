@@ -184,7 +184,7 @@ for i in allmodules:
     VerifyAllWheelsList = []
     #
     if ( " (built-in)>" not in name ) or  ("ERROR" not in name ): # skip downloading and adding module,  if  it is ''built-in'' package
-        #print("name:",name)
+        component = "[" + i + "]" 
         # get wheel  file(s)from pypi
         command = "python -m pip download --only-binary :all: --dest "+cwd+"/wheels"+" --no-cache "+i
         # proc = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -202,7 +202,7 @@ for i in allmodules:
         for whl in wheels: # check each line in wheels returned back from pip dowload command in subproccess
             if ("Collecting" in whl):  # if string found in line from pip download stdout
                 if("ERROR" not in str(output) ): # if no ERROR in returned stdout from pip download
-                    component = "[" + i + "]"  #str(i).split("'")
+                    #component = "[" + i + "]"  #str(i).split("'")
                     pypi_url = 'https://pypi.python.org/pypi/' + component + '/json'
                     dependencies = requests.get(pypi_url).json()
             if (("Downloading" in whl) or ("File was already downloaded" in whl)): 
