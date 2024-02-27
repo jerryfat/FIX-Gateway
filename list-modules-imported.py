@@ -190,15 +190,16 @@ for i in allmodules:
 
 
 plugin = "\"wheel\""
-dependencies = "[" + "Python:importlib.resources, Python:os" + "]"
-exclusions = "[" + "__main__.py" + "]" 
+dependencies = "[" + "\"Python:importlib.resources, Python:os\"" + "]"
+exclusions = "[" + "\"__main__.py\"" + "]" 
+whlStr = 'wheel = \"./wheels/' + wheel.replace("  ","") + "\"" 
 
 print("\n#### append to sysroot.toml: ####\n")
 for component in ModuleWheels:
-    whl = ModuleWheels[component] # print dict ke:value seems to add a space when printing, this does not
+    whl = "\""+ModuleWheels[component]+"\"" # print dict ke:value seems to add a space when printing, this does not
     print("["+component.lower()+"]")
     print('plugin = '       + plugin)
-    print('wheel =', whl) #"\"", str(ModuleWheels[component]).replace(" ","\"") , "\"") #space at front of wheel ?
+    print(whlStr)  #"\"", str(ModuleWheels[component]).replace(" ","\"") , "\"") #space at front of wheel ?
     print('dependencies = ' + dependencies )
     print('exclusions = '   + exclusions  )
     print("")
