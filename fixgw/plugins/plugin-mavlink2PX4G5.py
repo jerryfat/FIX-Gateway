@@ -107,7 +107,7 @@ class MainThread(threading.Thread):
         self.timeout = float(parent.config['timeout']) if ('timeout' in parent.config) and parent.config['timeout'] else 1.0
         self.buffer_size = int(parent.config['buffer_size']) if ('buffer_size' in parent.config) and parent.config['buffer_size'] else 1024
         print("starting subprocess mavlink to pyg5 pyefis converter..")
-        print("init() plugin-mavlink2PX4G5  __init__().. self.host self.port self.timeout self.buffer_size ",self.FIXGWserverIPaddr, self.FIXGWserverIPport, self.timeout, self.buffer_size) 
+        #print("init() plugin-mavlink2PX4G5  __init__().. self.host self.port self.timeout self.buffer_size ",self.FIXGWserverIPaddr, self.FIXGWserverIPport, self.timeout, self.buffer_size) 
         self.log = parent.log  # simplifies logging
         self.count = 0
         self.keylist = {"ROLL":3, "PITCH":0, "IAS":113, "ALT":4220,
@@ -131,7 +131,7 @@ class MainThread(threading.Thread):
         # $ python3 FIX-Gateway/mavlink2PX4G5.py -m "/dev/ttyUSB0,57600" -g 127.0.0.1:65432 -e 127.0.0.1:2100
         # $ python telemetry.py -m "udp://:14540" -g 127.0.0.1:65432 -e 127.0.0.1:2100
         if(self.pyMAVPX4connect == "172.17.0.1:14550") or (self.pyMAVPX4connect == "udp://:14540") or \
-          (self.pyMAVPX4connect == "udp:127.0.0.1:14445") or(self.pyMAVPX4connect == "udp:172.17.0.1:14540") or \
+          (self.pyMAVPX4connect == "udp:127.0.0.1:14445") or(self.pyMAVPX4connect == "udp:172.17.0.1:14540")or(self.pyMAVPX4connect == "udp://172.17.0.1:14550") or \
           (self.pyMAVPX4connect == "udp://:14445") or (self.pyMAVPX4connect == "udp://:14550"): # udp://:14550 # launch sitl if connection string matches "172.17.0.1:14550"
             print("$$$-starting PX4 SIM subprocess sitl..  $ sudo docker run --rm -it --env PX4_HOME_LAT=42.397742 --env PX4_HOME_LON=-79.1 --env PX4_HOME_ALT=488.0 jonasvautherin/px4-gazebo-headless:1.14.0") #" #"sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2")
             #command = 'sudo docker run --rm -it jonasvautherin/px4-gazebo-headless:1.13.2' 
