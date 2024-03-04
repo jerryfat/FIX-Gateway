@@ -25,7 +25,10 @@ for MAVLINK converter see this document you are reading:
 
 https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst
 ![](https://github.com/jerryfat/FIX-Gateway/blob/master/README.rst)
-
+=================================================================================================  
+## Ver 3 , Second release Dec 11, 2023 of mavlinkMAVSDKdronekitCombined.py , added standalone usb joystick support and can fly quad in sitl "
+=================================================================================================
+updated 2024-mar-04
 =================================================================================================  
 ## Ver 2 , Second release Dec 11, 2023 of mavlink2PX4G5.py and mavlinkMAVSDKdronekitCombined.py with added MAVSDK libs 
 =================================================================================================
