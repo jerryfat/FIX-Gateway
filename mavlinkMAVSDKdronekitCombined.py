@@ -22,6 +22,10 @@ import re
 
 #
 from reprint import output
+
+# import folium mapping package
+import folium
+ 
 #
 ################################################################################################
 # Settings
@@ -358,6 +362,8 @@ RxJoyData    = ""
 RxJoyUSBPkts = 0
 TxJoyMAVPkts = 0
 RxJoysticks  = {} # rx dict can be multiple Joysticks by guid, we dont care yet here
+RxLAT        = ""
+RxLON        = ""
 #
 # print multiple lines
 def PRINT():
@@ -369,12 +375,14 @@ def PRINT():
         f'TxG5pkts={TxG5pkts} TxG5len={TxG5len}',
         f'TxEfispkts={TxEfispkts} TxEfislen={TxEfislen}',
         f'RxJoyUSBPkts={RxJoyUSBPkts} TxJoyMAVPkts={TxJoyMAVPkts} RxJoyData:{RxJoyData}',
+        f'LAT={RxLON} LON={RxLAT} RxMAVmsg={RxMAVmsg}',
         flush=False, end='\r'
     )
     #print()
 
 #
 async def run(): #run manual_controls()
+    global data_dict
     """Main function to connect to the drone and input manual controls"""
     
     # Connect to the Simulation
@@ -396,7 +404,7 @@ async def run(): #run manual_controls()
     # Checking if Global Position Estimate is ok
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
-            print("-- Global position state is good enough for flying.")
+            print("-- Global position state is good enough for flying. true=health.is_global_position_ok and health.is_home_position_ok")
             break
 
     info = await drone.info.get_version() # firmware version
@@ -444,6 +452,7 @@ async def run(): #run manual_controls()
     asyncio.ensure_future(print_position(drone))
     asyncio.ensure_future(print_attitude_euler(drone))
     asyncio.ensure_future(print_heading(drone))
+    asyncio.ensure_future(sendmap_rawgps(drone))
     while True:
         await asyncio.sleep(1)
 
@@ -514,7 +523,7 @@ async def joystick_event(drone):
                     if event.button == 1: 
                         print("Joystick switch=off sw#:",event.button," ")
                         print("-- Starting ALTITUDE HOLD control... not implemented ")
-                        #await drone.manual_control.start_altitude_control()
+                        #await drone.manual_global data_dictcontrol.start_altitude_control()
                     if event.button == 2: print("Joystick switch=off sw#:",event.button," ")
                     if event.button == 3: 
                         print("Joystick switch=on sw#:",event.button," ")
@@ -621,7 +630,81 @@ async def joystick_event(drone):
                     #print(f"add hat {i} {Joysticks[jid]}")
         ## END JOYSTICK EVENT ####
 
-async def print_position(drone):
+async def sendmap_rawgps(drone):
+    global data_dict, RxLAT, RxLON #global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
+    async for rawgps in drone.telemetry.raw_gps():
+        #print("print_position():", position)
+        #now = datetime.now()
+        #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        '''
+        RawGps: [timestamp_us: 7282788000, latitude_deg: 42.3971753, longitude_deg: -79.09922739999999, absolute_altitude_m: 488.10601806640625, hdop: 0.0, vdop: 0.0, velocity_m_s: 0.0,
+        cog_deg: 167.75999450683594, altitude_ellipsoid_m: 488.10601806640625, horizontal_uncertainty_m: 1.0, vertical_uncertainty_m: 1.0, velocity_uncertainty_m_s: 0.25,
+        heading_uncertainty_deg: 0.0, yaw_deg: 0.0]
+        '''
+        RxMAVmsg = rawgps
+        rawgpsStr = str(rawgps).replace("RawGps: [","") 
+        rawgpsStr = str(rawgpsStr).replace("]","") 
+        RxLAT    = rawgpsStr.split(",")[1].split(":")[1]
+        RxLON    = rawgpsStr.split(",")[2].split(":")[1]
+        #print( "\n@@@@@ sendmap_rawgps()-->drone.telemetry.raw_gps() for my_map.html ", RxLAT, RxLON, rawgps)
+        PRINT()
+        try:
+            my_map = folium.Map(location = [ RxLAT, RxLON ], zoom_start = 14)
+            # CircleMarker with radius
+            folium.CircleMarker(location = [ RxLAT, RxLON ], radius = 5, popup = ' FRI ' ).add_to(my_map)
+            #
+            # add Openstreetmap layer
+            #folium.TileLayer('openstreetmap', name='OpenStreet Map').add_to(run_map)
+            # Add custom base maps to folium
+            basemaps = {
+                'Google Maps': folium.TileLayer(
+                    tiles = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                    attr = 'Google',
+                    name = 'Google Maps',
+                    overlay = True,
+                    control = True
+                ),
+                'Google Satellite': folium.TileLayer(
+                    tiles = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                    attr = 'Google',
+                    name = 'Google Satellite',
+                    overlay = True,
+                    control = True
+                ),
+                'Google Terrain': folium.TileLayer(
+                    tiles = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+                    attr = 'Google',
+                    name = 'Google Terrain',
+                    overlay = True,
+                    control = True
+               ),
+                'Google Satellite Hybrid': folium.TileLayer(
+                    tiles = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+                    attr = 'Google',
+                    name = 'Google Satellite',
+                    overlay = True,
+                    control = True
+                ),
+                'Esri Satellite': folium.TileLayer(
+                    tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                    attr = 'Esri',
+                    name = 'Esri Satellite',
+                    overlay = True,
+                    control = True
+                )
+            }
+
+            # Add custom basemaps
+            #basemaps['Google Maps'].add_to(my_map)
+            basemaps['Google Satellite Hybrid'].add_to(my_map)
+
+
+            # save as html
+            my_map.save("my_map.html")
+        except:
+            pass
+
+async def print_position(drone): # not used ?? rawgps instead ?
     global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
     async for position in drone.telemetry.position():
         #print("print_position():", position)
@@ -629,6 +712,7 @@ async def print_position(drone):
         #date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         #print("\n--@@@@@@--Received from ",Px4simAddrPort," MAVSDK position msg converting") #, sending to G5 and or Efis(): ", date_time," ", position)
         #print("--MAVSDK-- RECVd position msg",  position )
+        #print( "\n print_position() drone.telemetry.position() @!@!@!@!@!@!@ ", position)
         RxMAVlen    = len(str(position))
         RxMAVpkts  +=1
         RxMAVmsg    = position
@@ -636,8 +720,18 @@ async def print_position(drone):
         TxEfislen   = len(str(position))
         TxG5pkts   +=1
         TxG5len     = len(str(position))
-        PRINT()
+        #print("position=", position)
         SendAttitudeDataToG5simEfisSimMAVSDK(position)
+        #print( " my_map.html @!@!@!@!@!@!@ data_dict['latitude_deg'], data_dict['longitude_deg'] ", data_dict["latitude_deg"], data_dict["longitude_deg"] )
+        ###my_map = folium.Map(location = [ data_dict["latitude_deg"], data_dict["longitude_deg"] ], zoom_start = 12)
+        # CircleMarker with radius
+        ###folium.CircleMarker(location = [ data_dict["latitude_deg"], data_dict["longitude_deg"] ], radius = 50, popup = ' FRI ' ).add_to(my_map)
+        # save as html
+        ###my_map.save("my_map.html")
+        RxMAVmsg = position
+        RxLAT        = position.split(",")[0].split(":")[1]
+        RxLON        = position.split(",")[1].split(":")[1]
+        PRINT()
 
 async def print_heading(drone):
     global RxMAVlen, RxMAVpkts, RxMAVmsg, TxEfispkts, TxEfislen, TxG5pkts, TxG5len
@@ -654,7 +748,7 @@ async def print_heading(drone):
         TxEfislen   = len(str(heading))
         TxG5pkts   +=1
         TxG5len     = len(str(heading))
-        PRINT()
+        #PRINT()
         SendAttitudeDataToG5simEfisSimMAVSDK(heading)
 
 async def print_attitude_euler(drone):
@@ -672,7 +766,7 @@ async def print_attitude_euler(drone):
         TxEfislen   = len(str(attitude_euler))
         TxG5pkts   +=1
         TxG5len     = len(str(attitude_euler))
-        PRINT()
+        #PRINT()
         SendAttitudeDataToG5simEfisSimMAVSDK(attitude_euler)
 
 async def print_battery(drone):

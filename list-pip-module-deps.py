@@ -16,7 +16,7 @@ if args.module: # input from sitl qgcs or usb serial port to autopilot
 your_package = args.module
 pypi_url = 'https://pypi.python.org/pypi/' + your_package + '/json'
 data = requests.get(pypi_url).json()
-
+print("data:", data)
 reqs = data['info']['requires_dist']
 print("reqs   = ",reqs)
 

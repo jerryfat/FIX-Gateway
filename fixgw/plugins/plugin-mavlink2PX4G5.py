@@ -143,19 +143,19 @@ class MainThread(threading.Thread):
         #command = 'python3 ./mavlink2PX4G5.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
         # mavlinkMAVSDKdronekitCombinedJan13joystickManCtl.p
         #command = 'python ./mavlinkMAVSDKdronekitCombinedJan13joystickManCtl.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
-        command = 'python ./mavlinkMAVSDKdronekitCombined.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
+        command = 'python3 ./mavlinkMAVSDKdronekitCombined.py -m '+self.pyMAVPX4connect+' -g '+self.pyG5SimAddr+':'+str(self.pyG5SimPort)+' -e '+ self.pyefisSimAddr+':'+str(self.pyefisSimPort)
         # /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py
         print("$$$-starting command /home/jf/testgit/FIX-Gateway/mavlinkMAVSDKdronekitCombined.py:",command)
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #  gnome-terminal --geometry=120x20+500+500     --geometry 40x80+100+100 didnt work right
 
         print("$$$-starting subprocess pyEfis ../pyEfis/pyEfis.py")
-        command = 'python ../pyEfis/pyEfis.py' 
+        command = 'python3 ../pyEfis/pyEfis.py' 
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
         #python3 /home/jf/pyg5/Scripts/pyG5DualStacked 
         print("$$$-starting subprocess pyG5 ../pyG5/pyG5/pyG5Main.py -m hsi")
-        command = 'python ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
+        command = 'python3 ../pyG5/pyG5/pyG5Main.py -m hsi' # hsi is smaller wondow full is fullscreen python3 /home/jf/pyG5-main/pyG5/pyG5Main.py'   
         subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', command], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #
         
@@ -200,7 +200,7 @@ class MainThread(threading.Thread):
                     #print(f"Connected to {self.addr}")
                     self.data_pickled = self.conn.recv(1024)
                     self.data_dict = pickle.loads(self.data_pickled)   
-                    print("FIXGW plugin(run) plugin-mavlink2PX4G5.py received mavlink_data_dict:  ",self.data_dict, flush=False, end='\r')
+                    print("FIXGW server plugin rxd mavlink_data_dict:  ",self.data_dict, flush=False, end='\r')
                     #print("\r-FIXGW.run()-Received pickled mav_msg pickled-len()", date_time," ", len(self.data_pickled)) #, self.data_dict)
                     # copy key, value pairs into data dict for efis                   
                     #try: self.parent.db_write("ALT", self.data_dict["alt"]/1000)
